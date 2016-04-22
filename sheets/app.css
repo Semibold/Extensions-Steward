@@ -39,12 +39,10 @@ body { margin: 0; }
     background-color: rgb(229, 233, 239);
 }
 
-#controller h1[data-status="false"],
 #controller ul li[data-enabled="false"] {
     background-color: rgb(229, 233, 239);
 }
 
-#controller h1[data-status="false"]:hover,
 #controller ul li[data-enabled="false"]:hover {
     background-color: #fff;
 }

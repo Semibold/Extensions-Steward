@@ -1,0 +1,22 @@
+{
+    "extname": {
+        "description": "Extension name",
+        "message": "扩展管家"
+    },
+    "leftclicktodisablethis": {
+        "description": "Left-click to disable this extension",
+        "message": "单击禁用扩展"
+    },
+    "leftclicktoenablethis": {
+        "description": "Left-click to enable this extension",
+        "message": "单击启用扩展"
+    },
+    "onekeydisable": {
+        "description": "Click this item to disable all extensions",
+        "message": "禁用全部扩展"
+    },
+    "onekeyenable": {
+        "description": "Click this item to enable all extensions",
+        "message": "还原已禁扩展"
+    }
+}

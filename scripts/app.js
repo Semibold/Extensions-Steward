@@ -5,7 +5,7 @@
         status: "chrome.extensions.status"
     };
     
-    var status = !!JSON.parse(localStorage.getItem(config.status));
+    var status = JSON.parse(localStorage.getItem(config.status) === null ? true : localStorage.getItem(config.status));
     var buffer = JSON.parse(localStorage.getItem(config.buffer)) || [];
     var controller = document.getElementById("controller");
     
@@ -14,7 +14,7 @@
             var h1 = document.createElement("h1");
             var ul = document.createElement("ul");
             
-            h1.innerHTML = chrome.i18n.getMessage(status ? "onekeyenable" : "onekeydisable");
+            h1.innerHTML = chrome.i18n.getMessage(status ? "onekeydisable" : "onekeyenable");
             h1.addEventListener("click", status ? disableAll : enableAll);
             h1.setAttribute("data-status", status);
             
@@ -90,5 +90,5 @@
 
 
 window.addEventListener("contextmenu", function (e) {
-    e.preventDefault();
+    // e.preventDefault();
 });

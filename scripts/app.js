@@ -30,10 +30,7 @@
                 var span = document.createElement("span");
                 
                 img.alt = element.name;
-                // 避免某些不规范的扩展, 因没有提供图标而导致抛错
-                // Todo: 可以提供一张默认图片, 由开发者本人来决定吧
-                img.src = element.icons && element.icons.length > 0 ? element.icons[0].url: "";
-
+                img.src = element.icons ? element.icons[0].url : ["chrome://extension-icon/", element.id, "/32/0"].join("");
                 span.innerHTML = element.name;
                 li.title = chrome.i18n.getMessage(element.enabled ? "leftclicktodisablethis" : "leftclicktoenablethis");
                 li.id = element.id;

@@ -30,7 +30,7 @@
                 var span = document.createElement("span");
                 
                 img.alt = element.name;
-                img.src = element.icons[0].url;
+                img.src = element.icons ? element.icons[0].url : ["chrome://extension-icon/", element.id, "/32/0"].join("");
                 span.innerHTML = element.name;
                 li.title = chrome.i18n.getMessage(element.enabled ? "leftclicktodisablethis" : "leftclicktoenablethis");
                 li.id = element.id;

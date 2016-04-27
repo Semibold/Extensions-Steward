@@ -1,0 +1,63 @@
+body { margin: 0; }
+
+#controller {
+    font-size: 14px;
+    font-family: "Helvetica Neue", "Segoe UI", Arial, "Hiragino Sans GB", "微软雅黑", sans-serif;
+    width: 260px;
+    color: #333;
+}
+
+#controller h1 {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: normal;
+    text-align: center;
+}
+
+#controller ul {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    list-style-type: none;    
+}
+
+#controller h1,
+#controller ul li {
+    margin: 6px 4px;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px #e3e3e3, 0 0 2px 0 rgba(229, 233, 239, 0.3);
+    transition: background-color 0.25s;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+#controller h1:hover,
+#controller ul li:hover {
+    background-color: rgb(229, 233, 239);
+}
+
+#controller ul li[data-enabled="false"] {
+    background-color: rgb(229, 233, 239);
+}
+
+#controller ul li[data-enabled="false"]:hover {
+    background-color: #fff;
+}
+
+#controller img {
+    float: left;
+    margin: 8px;
+    width: 16px;
+    height: 16px;
+}
+
+#controller span {
+    float: left;
+    width: 210px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}

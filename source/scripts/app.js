@@ -79,6 +79,7 @@ class Steward {
         chrome.management.onDisabled.addListener(item => Steward.changeItemStatus(item, false));
         chrome.management.onInstalled.addListener(item => this.renderer());
         chrome.management.onUninstalled.addListener(item => this.renderer());
+        window.addEventListener("contextmenu", e => e.preventDefault());
     }
 
     disableAll() {

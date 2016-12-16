@@ -1,22 +1,22 @@
 {
-    "extname": {
+    "ExtensionName": {
         "description": "Extension name",
         "message": "Extensions Steward"
     },
-    "leftclicktodisablethis": {
+    "DisableItem": {
         "description": "Left-click to disable this extension",
         "message": "Left-click to disable this extension"
     },
-    "leftclicktoenablethis": {
+    "EnableItem": {
         "description": "Left-click to enable this extension",
         "message": "Left-click to enable this extension"
     },
-    "onekeydisable": {
-        "description": "Click this item to disable all extensions",
+    "OneKeyDisable": {
+        "description": "Click to Disable All Extensions",
         "message": "Click to Disable All Extensions"
     },
-    "onekeyenable": {
-        "description": "Click this item to enable all extensions",
+    "OneKeyRestore": {
+        "description": "Click to Restore Disabled Extensions",
         "message": "Click to Restore Disabled Extensions"
     }
 }

@@ -96,6 +96,7 @@ class Steward {
                     this.recently.push(item.id);
 
                     if (item.id === finalItem.id) {
+                        this.h1.textContent = chrome.i18n.getMessage("OneKeyRestore");
                         this.disabled = true;
                         this.setLocal();
                     }
@@ -109,6 +110,7 @@ class Steward {
             chrome.management.get(id, item => {
                 chrome.management.setEnabled(item.id, true, () => {
                     if (this.recently.length - 1 === index) {
+                        this.h1.textContent = chrome.i18n.getMessage("OneKeyDisable");
                         this.disabled = false;
                         this.recently.length = 0;
                         this.setLocal();

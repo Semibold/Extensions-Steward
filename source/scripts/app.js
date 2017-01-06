@@ -1,14 +1,8 @@
 class Steward {
 
     constructor() {
-        this.state = {
-            disabled: false,
-            recently: [],
-        };
-        this.local = {
-            disabled: "chrome.disabled",
-            recently: "chrome.recently",
-        };
+        this.recently = [];
+        this.localKey = "chrome.recently";
         this.filter = {
             id: chrome.i18n.getMessage("@@extension_id"),
             type: "theme",
@@ -29,16 +23,12 @@ class Steward {
     }
 
     getLocal() {
-        let disabled = JSON.parse(localStorage.getItem(this.local.disabled));
-        let recently = JSON.parse(localStorage.getItem(this.local.recently));
-
-        this.state.disabled = Boolean(disabled);
-        this.state.recently = Array.isArray(recently) ? recently : [];
+        let recently = JSON.parse(localStorage.getItem(this.localKey));
+        this.recently = Array.isArray(recently) ? recently : [];
     }
 
     setLocal() {
-        localStorage.setItem(this.local.disabled, JSON.stringify(this.state.disabled));
-        localStorage.setItem(this.local.recently, JSON.stringify(this.state.recently));
+        localStorage.setItem(this.localKey, JSON.stringify(this.recently));
     }
 
     renderer() {
@@ -46,7 +36,6 @@ class Steward {
             result.sort((prev, next) => {
                 return prev.name.localeCompare(next.name, "en-US");
             }).forEach(item => {
-                console.log(item.name);
                 if (item.id !== this.filter.id && item.type !== this.filter.type) {
                     let li = document.createElement("li");
                     let img = document.createElement("img");
@@ -64,7 +53,7 @@ class Steward {
                 }
             });
 
-            this.domNodes.h1.textContent = chrome.i18n.getMessage(this.state.disabled ? "OneKeyRestore" : "OneKeyDisable");
+            this.domNodes.h1.textContent = chrome.i18n.getMessage(this.recently.length ? "OneKeyRestore" : "OneKeyDisable");
             this.domNodes.ul.textContent = this.domNodes.controller.textContent = "";
             this.domNodes.ul.appendChild(this.domNodes.fragment);
             this.domNodes.controller.appendChild(this.domNodes.h1);
@@ -83,7 +72,7 @@ class Steward {
         };
 
         this.domNodes.h1.addEventListener("click", () => {
-            this.state.disabled ? this.lastRestore() : this.disableAll();
+            this.recently.length ? this.lastRestore() : this.disableAll();
         });
 
         this.domNodes.ul.addEventListener("click", e => {
@@ -98,34 +87,43 @@ class Steward {
         chrome.management.onDisabled.addListener(item => changeItemStatus(item, false));
         chrome.management.onInstalled.addListener(item => this.renderer());
         chrome.management.onUninstalled.addListener(item => this.renderer());
-        window.addEventListener("contextmenu", e => e.preventDefault());
+        document.addEventListener("contextmenu", e => e.preventDefault());
     }
 
     disableAll() {
         chrome.management.getAll(result => {
-            result.forEach(item => {
+            let sortedResult = result.filter(item => {
                 if (item.id !== this.filter.id && item.type !== this.filter.type && item.enabled) {
-                    chrome.management.setEnabled(item.id, false, () => {
-                        this.state.recently.push(item.id);
-                        this.setLocal();
-                    });
+                    return item;
                 }
             });
 
-            this.domNodes.h1.textContent = chrome.i18n.getMessage("OneKeyRestore");
-            this.state.disabled = true;
+            while (sortedResult.length) {
+                let item = sortedResult.shift();
+                chrome.management.setEnabled(item.id, false, () => {
+                    this.recently.push(item.id);
+
+                    if (!sortedResult.length) {
+                        this.domNodes.h1.textContent = chrome.i18n.getMessage("OneKeyRestore");
+                        this.setLocal();
+                    }
+                });
+            }
         });
     }
 
     lastRestore() {
-        while (this.state.recently.length) {
-            chrome.management.setEnabled(this.state.recently.shift(), true, () => {
-                this.setLocal();
+        while (this.recently.length) {
+            chrome.management.get(this.recently.shift(), item => {
+                chrome.management.setEnabled(item.id, true, () => {
+                    if (!this.recently.length) {
+                        this.domNodes.h1.textContent = chrome.i18n.getMessage("OneKeyDisable");
+                        this.setLocal();
+                    }
+                });
             });
         }
 
-        this.domNodes.h1.textContent = chrome.i18n.getMessage("OneKeyDisable");
-        this.state.disabled = false;
     }
 
 }

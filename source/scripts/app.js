@@ -93,11 +93,7 @@
 
         disableAll() {
             chrome.management.getAll(result => {
-                let filterResult = result.filter(item => {
-                    if (item.id !== this.filter.id && item.type !== this.filter.type && item.enabled) {
-                        return item;
-                    }
-                });
+                let filterResult = result.filter(item => item.id !== this.filter.id && item.type !== this.filter.type && item.enabled);
 
                 while (filterResult.length) {
                     let item = filterResult.shift();

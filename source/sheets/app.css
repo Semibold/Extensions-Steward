@@ -5,7 +5,6 @@ body {
 #controller {
     font-size: 14px;
     font-family: "Helvetica Neue", "Segoe UI", Arial, "Hiragino Sans GB", "微软雅黑", sans-serif;
-    width: 260px;
     color: #333;
 }
 
@@ -22,6 +21,7 @@ body {
     margin-bottom: 0;
     padding-left: 0;
     list-style-type: none;
+    width: 260px;
 }
 
 #controller h1,

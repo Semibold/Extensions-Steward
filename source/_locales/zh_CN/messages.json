@@ -1,21 +1,21 @@
 {
-    "ExtensionName": {
+    "extension_name": {
         "description": "Extension name",
         "message": "扩展管家"
     },
-    "DisableItem": {
+    "disable_item": {
         "description": "Left-click to disable this extension",
         "message": "单击禁用扩展"
     },
-    "EnableItem": {
+    "enable_item": {
         "description": "Left-click to enable this extension",
         "message": "单击启用扩展"
     },
-    "OneKeyDisable": {
+    "one_key_disable": {
         "description": "Click to Disable All Extensions",
         "message": "禁用全部扩展"
     },
-    "OneKeyRestore": {
+    "one_key_restore": {
         "description": "Click to Restore Disabled Extensions",
         "message": "还原已禁扩展"
     }

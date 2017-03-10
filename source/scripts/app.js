@@ -45,7 +45,7 @@
                         span.textContent = item.name;
                         img.alt = item.name;
                         img.src = item.icons ? item.icons[0].url : `chrome://extension-icon/${item.id}/32/0`;
-                        li.title = chrome.i18n.getMessage(item.enabled ? "DisableItem" : "EnableItem");
+                        li.title = chrome.i18n.getMessage(item.enabled ? "disable_item" : "enable_item");
                         li.dataset.id = img.dataset.id = span.dataset.id = item.id;
                         li.dataset.enabled = item.enabled;
                         li.appendChild(img);
@@ -54,7 +54,7 @@
                     }
                 });
 
-                this.domNodes.h1.textContent = chrome.i18n.getMessage(this.recently.length ? "OneKeyRestore" : "OneKeyDisable");
+                this.domNodes.h1.textContent = chrome.i18n.getMessage(this.recently.length ? "one_key_restore" : "one_key_disable");
                 this.domNodes.ul.textContent = this.domNodes.controller.textContent = "";
                 this.domNodes.ul.appendChild(this.domNodes.fragment);
                 this.domNodes.controller.appendChild(this.domNodes.h1);
@@ -67,7 +67,7 @@
                 let li = document.querySelector(`li[data-id="${item.id}"]`);
 
                 if (li) {
-                    li.title = chrome.i18n.getMessage(enabled ? "DisableItem" : "EnableItem");
+                    li.title = chrome.i18n.getMessage(enabled ? "disable_item" : "enable_item");
                     li.dataset.enabled = enabled;
                 }
             };
@@ -102,7 +102,7 @@
                         this.recently.push(item.id);
 
                         if (!filterResult.length) {
-                            this.domNodes.h1.textContent = chrome.i18n.getMessage("OneKeyRestore");
+                            this.domNodes.h1.textContent = chrome.i18n.getMessage("one_key_restore");
                             this.setArray();
                         }
                     });
@@ -126,7 +126,7 @@
                     if (filterResult[id]) {
                         chrome.management.setEnabled(id, true, () => {
                             if (!this.recently.length) {
-                                this.domNodes.h1.textContent = chrome.i18n.getMessage("OneKeyDisable");
+                                this.domNodes.h1.textContent = chrome.i18n.getMessage("one_key_disable");
                                 this.setArray();
                             }
                         });

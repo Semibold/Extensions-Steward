@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
-    "name": "__MSG_ExtensionName__",
-    "version": "2.1.4",
+    "name": "__MSG_extension_name__",
+    "version": "2.1.5",
     "default_locale": "en",
     "description": "Extensions Steward, Extensions Manager",
     "icons": {
@@ -12,7 +12,7 @@
     "browser_action": {
         "default_icon": "icons/32.png",
         "default_popup": "popup.html",
-        "default_title": "__MSG_ExtensionName__"
+        "default_title": "__MSG_extension_name__"
     },
     "author": "Aqours",
     "homepage_url": "https://github.com/Aqours/Extensions-Steward",

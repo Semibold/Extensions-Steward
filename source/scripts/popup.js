@@ -73,11 +73,12 @@
         disableItems() {
             chrome.management.getAll(raw => {
                 let result = raw.filter(item => item.id !== this.impurity.id && item.type !== this.impurity.type && item.enabled);
+                let lastId = result[result.length - 1].id;
                 while (result.length) {
                     let item = result.shift();
                     chrome.management.setEnabled(item.id, false, n => {
                         this.disabled.add(item.id);
-                        if (!result.length) {
+                        if (item.id === lastId) {
                             this.setCachePool();
                             this.domNodes.h1.textContent = chrome.i18n.getMessage("one_key_restore");
                         }

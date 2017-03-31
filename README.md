@@ -2,4 +2,4 @@
 
 > Chrome Extension
 
-Minimum Chrome Version: 52.0
+Minimum Chrome Version: 56.0

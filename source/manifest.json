@@ -15,7 +15,7 @@
     "default_title": "__MSG_extension_name__"
   },
   "homepage_url": "https://github.com/Aqours/Extensions-Steward",
-  "minimum_chrome_version": "52",
+  "minimum_chrome_version": "56",
   "permissions": [
     "management"
   ]

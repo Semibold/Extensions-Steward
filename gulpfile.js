@@ -1,5 +1,5 @@
 /**
- * Deploy
+ * Gulp
  */
 const gulp = require("gulp");
 const gulpZip = require("gulp-zip");

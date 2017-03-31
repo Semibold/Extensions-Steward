@@ -1,22 +1,21 @@
 {
-    "extension_name": {
-        "description": "Extension name",
-        "message": "Extensions Steward"
-    },
-    "disable_item": {
-        "description": "Left-click to disable this extension",
-        "message": "Left-click to disable this extension"
-    },
-    "enable_item": {
-        "description": "Left-click to enable this extension",
-        "message": "Left-click to enable this extension"
-    },
-    "one_key_disable": {
-        "description": "Click to Disable All Extensions",
-        "message": "Click to Disable All Extensions"
-    },
-    "one_key_restore": {
-        "description": "Click to Restore Disabled Extensions",
-        "message": "Click to Restore Disabled Extensions"
-    }
+  "extension_name": {
+    "message": "Extensions Steward"
+  },
+  "extension_description": {
+    "message": "Extensions Steward, Extensions Manager"
+  },
+
+  "disable_item": {
+    "message": "Left-click to disable this extension"
+  },
+  "enable_item": {
+    "message": "Left-click to enable this extension"
+  },
+  "one_key_disable": {
+    "message": "Click to disable all extensions"
+  },
+  "one_key_restore": {
+    "message": "Click to restore disabled extensions"
+  }
 }

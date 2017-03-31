@@ -22,7 +22,7 @@
         }
 
         loadStart() {
-            let buffer = JSON.parse(localStorage.getItem(this.keyTable.disabled));
+            let buffer = this.getCachePool();
             Array.isArray(buffer) && buffer.forEach(id => typeof id === "string" && this.disabled.add(id));
         }
 
@@ -78,8 +78,8 @@
                     chrome.management.setEnabled(item.id, false, n => {
                         this.disabled.add(item.id);
                         if (!result.length) {
-                            this.domNodes.h1.textContent = chrome.i18n.getMessage("one_key_restore");
                             this.setCachePool();
+                            this.domNodes.h1.textContent = chrome.i18n.getMessage("one_key_restore");
                         }
                     });
                 }
@@ -88,27 +88,50 @@
 
         restoreItems() {
             chrome.management.getAll(raw => {
+                let disabledRecently = Array.from(this.disabled);
                 let disabledExisting = new Set(raw.map(item => {
-                    if (item.id !== this.impurity.id && item.type !== this.impurity.type && !item.enabled) {
-                        return item.id;
-                    }
+                    if (item.id !== this.impurity.id && item.type !== this.impurity.type && !item.enabled) return item.id;
                 }));
-                let disabledRecently = [...disabledExisting].filter(id => this.disabled.has(id));
 
                 while (disabledRecently.length) {
-                    chrome.management.setEnabled(disabledRecently.shift(), true, n => {
-                        if (!disabledRecently.length) {
-                            this.disabled.clear();
-                            this.domNodes.h1.textContent = chrome.i18n.getMessage("one_key_disable");
-                            this.setCachePool();
-                        }
-                    });
+                    let id = disabledRecently.shift();
+                    disabledExisting.has(id) && chrome.management.setEnabled(id, true);
                 }
+
+                this.disabled.clear();
+                this.setCachePool();
+                this.domNodes.h1.textContent = chrome.i18n.getMessage("one_key_disable");
             });
         }
 
+        getCachePool() {
+            try {
+                return JSON.parse(localStorage.getItem(this.keyTable.disabled));
+            } catch (e) {
+                this.removeCachePool();
+                console.warn(e.message);
+                return null;
+            }
+        }
+
         setCachePool() {
-            localStorage.setItem(this.keyTable.disabled, Array.from(this.disabled));
+            try {
+                localStorage.setItem(this.keyTable.disabled, JSON.stringify(Array.from(this.disabled)));
+                return true;
+            } catch (e) {
+                console.warn(e.message);
+                return false;
+            }
+        }
+
+        removeCachePool() {
+            try {
+                localStorage.removeItem(this.keyTable.disabled);
+                return true;
+            } catch (e) {
+                console.warn(e.message);
+                return false;
+            }
         }
 
         static transformItem(item, enabled) {

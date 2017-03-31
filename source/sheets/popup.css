@@ -1,11 +1,7 @@
-body {
-    margin: 0;
-}
-
 #controller {
     font-size: 14px;
-    font-family: "Helvetica Neue", "Segoe UI", Arial, "Hiragino Sans GB", "微软雅黑", sans-serif;
     color: #333;
+    user-select: none;
 }
 
 #controller h1 {

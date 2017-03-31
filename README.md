@@ -1,3 +1,5 @@
 # Extensions-Steward
 
-Chrome Extension - Minimum Chrome Version: 52.0
+> Chrome Extension
+
+Minimum Chrome Version: 56.0

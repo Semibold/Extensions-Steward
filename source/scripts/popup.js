@@ -73,7 +73,7 @@
         disableItems() {
             chrome.management.getAll(raw => {
                 let result = raw.filter(item => item.id !== this.impurity.id && item.type !== this.impurity.type && item.enabled);
-                let lastId = result[result.length - 1].id;
+                let lastId = Boolean(result.length) && result[result.length - 1].id;
                 while (result.length) {
                     let item = result.shift();
                     chrome.management.setEnabled(item.id, false, n => {

@@ -11,7 +11,7 @@
     "url": "git+https://github.com/Aqours/Extensions-Steward.git"
   },
   "author": "Aqours",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Aqours/Extensions-Steward/issues"
   },

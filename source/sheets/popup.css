@@ -1,3 +1,6 @@
+@import "module/base.css";
+@import "module/scrollbar.css";
+
 #controller {
     font-size: 14px;
     color: #333;
@@ -27,7 +30,7 @@
     line-height: 32px;
     border-radius: 2px;
     box-shadow: 0 0 0 1px #e3e3e3, 0 0 2px 0 rgba(229, 233, 239, 0.3);
-    transition: background-color 0.25s;
+    transition: background-color 0.15s;
     overflow: hidden;
     cursor: pointer;
 }

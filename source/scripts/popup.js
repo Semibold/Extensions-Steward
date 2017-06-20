@@ -1,150 +1,154 @@
 {
 
-    class Steward {
+    const ExtensionManager = class {
 
         constructor() {
-            this.disabled = new Set();
-            this.keyTable = {disabled: "chrome.recently_disabled"};
-            this.impurity = {id: chrome.runtime.id, type: "theme"};
+            this.impurity = {
+                id: chrome.runtime.id,
+                type: "theme",
+            };
             this.domNodes = {
                 h1: document.createElement("h1"),
                 ul: document.createElement("ul"),
-                fragment: document.createDocumentFragment(),
                 controller: document.getElementById("controller"),
             };
-            this.decorator();
+            this.allExtensionInfoMap = new WeakMap();
+            this.disabledExtensionIdSet = new Set();
+            this.extensionIdStorageKey = "disabled_extension_id";
         }
 
+        /** @public */
         decorator() {
-            this.loadStart();
-            this.renderItems();
-            this.addListener();
+            this.readFromStorage();
+            this.renderAllExtension();
+            this.addGlobalListener();
+            return this;
         }
 
-        loadStart() {
-            let buffer = this.getCachePool();
-            Array.isArray(buffer) && buffer.forEach(id => typeof id === "string" && this.disabled.add(id));
+        /** @private */
+        readFromStorage() {
+            const data = localStorage.getItem(this.extensionIdStorageKey);
+            const list = data ? data.split(",") : [];
+            list.forEach(id => this.disabledExtensionIdSet.add(id));
         }
 
-        renderItems() {
-            chrome.management.getAll(raw => {
-                raw.sort((prev, next) => {
+        /** @private */
+        writeToStorage() {
+            localStorage.setItem(this.extensionIdStorageKey, Array.from(this.disabledExtensionIdSet).join(","));
+        }
+
+        /** @private */
+        renderAllExtension() {
+            chrome.management.getAll(list => {
+                const fragment = document.createDocumentFragment();
+
+                list.sort((prev, next) => {
                     return prev.name.localeCompare(next.name, "en-US");
                 }).forEach(item => {
                     if (item.id !== this.impurity.id && item.type !== this.impurity.type) {
-                        let li = document.createElement("li");
-                        let img = document.createElement("img");
-                        let span = document.createElement("span");
+                        const li = document.createElement("li");
+                        const img = document.createElement("img");
+                        const span = document.createElement("span");
 
                         span.textContent = item.name;
                         img.alt = item.name;
                         img.src = item.icons ? item.icons[0].url : `chrome://extension-icon/${item.id}/32/0`;
                         li.title = chrome.i18n.getMessage(item.enabled ? "disable_item" : "enable_item");
-                        li.dataset.id = item.id;
                         li.dataset.enabled = item.enabled;
-                        li.appendChild(img);
-                        li.appendChild(span);
-                        this.domNodes.fragment.appendChild(li);
+                        li.append(img, span);
+                        fragment.append(li);
+
+                        this.allExtensionInfoMap.set(li, item);
                     }
                 });
 
-                this.domNodes.h1.textContent = chrome.i18n.getMessage(this.disabled.size ? "one_key_restore" : "one_key_disable");
+                this.domNodes.h1.textContent = chrome.i18n.getMessage(this.disabledExtensionIdSet.size ? "one_key_restore" : "one_key_disable");
                 this.domNodes.ul.textContent = this.domNodes.controller.textContent = "";
-                this.domNodes.ul.appendChild(this.domNodes.fragment);
-                this.domNodes.controller.appendChild(this.domNodes.h1);
-                this.domNodes.controller.appendChild(this.domNodes.ul);
+                this.domNodes.ul.append(fragment);
+                this.domNodes.controller.append(this.domNodes.h1, this.domNodes.ul);
             });
         }
 
-        addListener() {
-            this.domNodes.h1.addEventListener("click", e => this.disabled.size ? this.restoreItems() : this.disableItems());
-            this.domNodes.ul.addEventListener("click", e => {
-                let li = e.target.closest("li");
-                li && chrome.management.get(li.dataset.id, item => chrome.management.setEnabled(item.id, !item.enabled));
+        /** @private */
+        addGlobalListener() {
+            this.domNodes.h1.addEventListener("click", e => {
+                if (this.disabledExtensionIdSet.size) {
+                    this.restoreDisabledExtension();
+                } else {
+                    this.disableAllExtension();
+                }
             });
 
-            chrome.management.onEnabled.addListener(item => Steward.transformItem(item, true));
-            chrome.management.onDisabled.addListener(item => Steward.transformItem(item, false));
-            chrome.management.onInstalled.addListener(item => this.renderItems());
-            chrome.management.onUninstalled.addListener(item => this.renderItems());
+            this.domNodes.ul.addEventListener("click", e => {
+                const li = e.target.closest("li");
+                if (this.allExtensionInfoMap.has(li)) {
+                    const item = this.allExtensionInfoMap.get(li);
+                    chrome.management.get(item.id, item => chrome.management.setEnabled(item.id, !item.enabled));
+                }
+            });
+
+            chrome.management.onEnabled.addListener(item => this.transformExtensionState(item, true));
+            chrome.management.onDisabled.addListener(item => this.transformExtensionState(item, false));
+            chrome.management.onInstalled.addListener(item => this.renderAllExtension());
+            chrome.management.onUninstalled.addListener(item => this.renderAllExtension());
             document.addEventListener("contextmenu", e => e.preventDefault());
         }
 
-        disableItems() {
-            chrome.management.getAll(raw => {
-                let result = raw.filter(item => item.id !== this.impurity.id && item.type !== this.impurity.type && item.enabled);
-                let lastId = Boolean(result.length) && result[result.length - 1].id;
-                while (result.length) {
-                    let item = result.shift();
-                    chrome.management.setEnabled(item.id, false, n => {
-                        this.disabled.add(item.id);
-                        if (item.id === lastId) {
-                            this.setCachePool();
+        /** @private */
+        transformExtensionState(item, enabled) {
+            for (const li of this.domNodes.ul.children) {
+                if (this.allExtensionInfoMap.has(li)) {
+                    if (this.allExtensionInfoMap.get(li).id === item.id) {
+                        li.title = chrome.i18n.getMessage(enabled ? "disable_item" : "enable_item");
+                        li.dataset.enabled = enabled;
+                        break;
+                    }
+                }
+            }
+        }
+
+        /** @private */
+        disableAllExtension() {
+            chrome.management.getAll(list => {
+                const filtered = list.filter(item => item.id !== this.impurity.id && item.type !== this.impurity.type && item.enabled);
+                const tailId = Boolean(filtered.length) && filtered[filtered.length - 1].id;
+
+                while (filtered.length) {
+                    const item = filtered.shift();
+                    chrome.management.setEnabled(item.id, false, () => {
+                        this.disabledExtensionIdSet.add(item.id);
+                        if (item.id === tailId) {
+                            this.writeToStorage();
                             this.domNodes.h1.textContent = chrome.i18n.getMessage("one_key_restore");
                         }
-                    });
+                    })
                 }
             });
         }
 
-        restoreItems() {
-            chrome.management.getAll(raw => {
-                let disabledRecently = Array.from(this.disabled);
-                let disabledExisting = new Set(raw.map(item => {
-                    if (item.id !== this.impurity.id && item.type !== this.impurity.type && !item.enabled) return item.id;
+        /** @private */
+        restoreDisabledExtension() {
+            chrome.management.getAll(list => {
+                const disabledRecently = Array.from(this.disabledExtensionIdSet);
+                const disabledExisting = new Set(list.map(item => {
+                    if (item.id !== this.impurity.id && item.type !== this.impurity.type && !item.enabled) {
+                        return item.id;
+                    }
                 }));
 
                 while (disabledRecently.length) {
-                    let id = disabledRecently.shift();
+                    const id = disabledRecently.shift();
                     disabledExisting.has(id) && chrome.management.setEnabled(id, true);
                 }
 
-                this.disabled.clear();
-                this.setCachePool();
+                this.disabledExtensionIdSet.clear();
+                this.writeToStorage();
                 this.domNodes.h1.textContent = chrome.i18n.getMessage("one_key_disable");
             });
         }
 
-        getCachePool() {
-            try {
-                return JSON.parse(localStorage.getItem(this.keyTable.disabled));
-            } catch (e) {
-                this.removeCachePool();
-                console.warn(e.message);
-                return null;
-            }
-        }
+    };
 
-        setCachePool() {
-            try {
-                localStorage.setItem(this.keyTable.disabled, JSON.stringify(Array.from(this.disabled)));
-                return true;
-            } catch (e) {
-                console.warn(e.message);
-                return false;
-            }
-        }
-
-        removeCachePool() {
-            try {
-                localStorage.removeItem(this.keyTable.disabled);
-                return true;
-            } catch (e) {
-                console.warn(e.message);
-                return false;
-            }
-        }
-
-        static transformItem(item, enabled) {
-            let li = document.querySelector(`li[data-id="${item.id}"]`);
-            if (li) {
-                li.title = chrome.i18n.getMessage(enabled ? "disable_item" : "enable_item");
-                li.dataset.enabled = enabled;
-            }
-        }
-
-    }
-
-    new Steward();
+    new ExtensionManager().decorator();
 
 }

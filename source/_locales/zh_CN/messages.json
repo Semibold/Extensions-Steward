@@ -5,7 +5,6 @@
   "extension_description": {
     "message": "扩展管家，快速的启用、禁用扩展"
   },
-
   "disable_item": {
     "message": "单击禁用扩展"
   },

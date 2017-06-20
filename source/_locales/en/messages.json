@@ -5,12 +5,11 @@
   "extension_description": {
     "message": "Extensions Steward, Extensions Manager"
   },
-
   "disable_item": {
-    "message": "Left-click to disable this extension"
+    "message": "Click to disable this extension"
   },
   "enable_item": {
-    "message": "Left-click to enable this extension"
+    "message": "Click to enable this extension"
   },
   "one_key_disable": {
     "message": "Click to disable all extensions"

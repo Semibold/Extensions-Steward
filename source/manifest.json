@@ -1,13 +1,13 @@
 {
   "manifest_version": 2,
   "name": "__MSG_extension_name__",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "default_locale": "en",
   "description": "__MSG_extension_description__",
   "icons": {
-    "128": "icons/128.png",
+    "32": "icons/32.png",
     "64": "icons/64.png",
-    "32": "icons/32.png"
+    "128": "icons/128.png"
   },
   "browser_action": {
     "default_icon": "icons/32.png",
@@ -15,7 +15,7 @@
     "default_title": "__MSG_extension_name__"
   },
   "homepage_url": "https://github.com/Aqours/Extensions-Steward",
-  "minimum_chrome_version": "56",
+  "minimum_chrome_version": "59.0",
   "permissions": [
     "management"
   ]

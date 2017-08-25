@@ -1,6 +1,6 @@
 {
 
-    const ExtensionManager = class {
+    class ExtensionManager {
 
         constructor() {
             this.impurity = {
@@ -17,7 +17,10 @@
             this.extensionIdStorageKey = "disabled_extension_id";
         }
 
-        /** @public */
+        /**
+         * @public
+         * @return {ExtensionManager}
+         */
         decorator() {
             this.readFromStorage();
             this.renderAllExtension();
@@ -94,7 +97,11 @@
             document.addEventListener("contextmenu", e => e.preventDefault());
         }
 
-        /** @private */
+        /**
+         * @private
+         * @param {ExtensionInfo} item
+         * @param {boolean} enabled
+         */
         transformExtensionState(item, enabled) {
             for (const li of this.domNodes.ul.children) {
                 if (this.allExtensionInfoMap.has(li)) {
@@ -147,7 +154,7 @@
             });
         }
 
-    };
+    }
 
     new ExtensionManager().decorator();
 

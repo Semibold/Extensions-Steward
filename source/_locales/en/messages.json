@@ -16,5 +16,8 @@
   },
   "one_key_restore": {
     "message": "Restore the disabled extensions"
+  },
+  "get_more_extensions": {
+    "message": "Get more extensions"
   }
 }

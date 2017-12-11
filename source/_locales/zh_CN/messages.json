@@ -16,5 +16,8 @@
   },
   "one_key_restore": {
     "message": "还原被一键禁用的扩展"
+  },
+  "get_more_extensions": {
+    "message": "获取更多扩展程序"
   }
 }

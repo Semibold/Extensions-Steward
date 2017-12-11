@@ -6,15 +6,15 @@
     "message": "Extensions Steward, Extensions Manager"
   },
   "disable_item": {
-    "message": "Click to disable this extension"
+    "message": "Disable this extension"
   },
   "enable_item": {
-    "message": "Click to enable this extension"
+    "message": "Enable this extension"
   },
   "one_key_disable": {
-    "message": "Click to disable all extensions"
+    "message": "Disable all extensions except self"
   },
   "one_key_restore": {
-    "message": "Click to restore disabled extensions"
+    "message": "Restore the disabled extensions"
   }
 }

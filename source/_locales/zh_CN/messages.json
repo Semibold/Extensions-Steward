@@ -12,10 +12,10 @@
     "message": "启用这个扩展"
   },
   "one_key_disable": {
-    "message": "禁用除自身以外的扩展"
+    "message": "禁用全部扩展"
   },
   "one_key_restore": {
-    "message": "还原被一键禁用的扩展"
+    "message": "还原已禁扩展"
   },
   "get_more_extensions": {
     "message": "获取更多扩展程序"

@@ -12,10 +12,10 @@
     "message": "Enable this extension"
   },
   "one_key_disable": {
-    "message": "Disable all extensions except self"
+    "message": "Disable all extensions"
   },
   "one_key_restore": {
-    "message": "Restore the disabled extensions"
+    "message": "Restore disabled extensions"
   },
   "get_more_extensions": {
     "message": "Get more extensions"

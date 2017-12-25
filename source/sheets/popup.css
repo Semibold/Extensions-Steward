@@ -1,5 +1,5 @@
-@import "core/base.css";
-@import "core/scrollbar.css";
+@import "base/base.css";
+@import "base/scrollbar.css";
 
 #controller {
     font-size: 14px;

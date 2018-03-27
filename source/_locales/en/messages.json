@@ -1,23 +1,8 @@
 {
-  "extension_name": {
+  "ext_name": {
     "message": "Extensions Steward"
   },
-  "extension_description": {
+  "ext_desc": {
     "message": "Extensions Steward, Extensions Manager"
-  },
-  "disable_item": {
-    "message": "Disable this extension"
-  },
-  "enable_item": {
-    "message": "Enable this extension"
-  },
-  "one_key_disable": {
-    "message": "Disable all extensions"
-  },
-  "one_key_restore": {
-    "message": "Restore disabled extensions"
-  },
-  "get_more_extensions": {
-    "message": "Get more extensions"
   }
 }

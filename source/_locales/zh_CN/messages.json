@@ -1,23 +1,3 @@
 {
-  "extension_name": {
-    "message": "扩展管家"
-  },
-  "extension_description": {
-    "message": "扩展管家，快速的启用、禁用扩展"
-  },
-  "disable_item": {
-    "message": "禁用这个扩展"
-  },
-  "enable_item": {
-    "message": "启用这个扩展"
-  },
-  "one_key_disable": {
-    "message": "禁用全部扩展"
-  },
-  "one_key_restore": {
-    "message": "还原已禁扩展"
-  },
-  "get_more_extensions": {
-    "message": "获取更多扩展程序"
-  }
+
 }

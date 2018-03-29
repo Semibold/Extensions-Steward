@@ -3,7 +3,7 @@
     "message": "扩展管家"
   },
   "ext_desc": {
-    "message": "扩展管家，快速的启用、禁用及移除扩展"
+    "message": "扩展管家，快速的启用、禁用扩展"
   },
   "disable_extension": {
     "message": "禁用扩展"

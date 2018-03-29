@@ -5,9 +5,6 @@
   "ext_desc": {
     "message": "Extensions Steward, Extensions Manager"
   },
-  "get_more_extensions": {
-    "message": "Get more extensions"
-  },
   "disable_extension": {
     "message": "Disable extension"
   },

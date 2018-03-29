@@ -9,6 +9,10 @@
 
 ## Screenshot
 
+![management](screenshot/management.png)
+
+处于打开状态的扩展管家
+
 ![options](screenshot/options.png)
 
 管理指定类型的扩展

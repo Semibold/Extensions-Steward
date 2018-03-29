@@ -52,7 +52,7 @@ class ExtensionManager {
         li.append(img, span);
         listFragment.append(li);
         this.renderExtensionState(li, item);
-        this.allExtIdMap.set(li, item.id);
+        this.allExtIdMap.set(li, item);
       });
       this.nodes.h1.textContent = chrome.i18n.getMessage(this.eidDisabledSet.size ? "one_key_restore" : "one_key_disable");
       this.nodes.ul.textContent = this.nodes.app.textContent = "";
@@ -101,15 +101,19 @@ class ExtensionManager {
     this.nodes.ul.addEventListener("click", e => {
       const li = e.target.closest("li");
       if (this.allExtIdMap.has(li)) {
-        const id = this.allExtIdMap.get(li);
+        const id = this.allExtIdMap.get(li).id;
         chrome.management.get(id, item => chrome.management.setEnabled(item.id, !item.enabled));
       }
     });
     document.addEventListener("contextmenu", e => {
       const li = e.target.closest("li");
       const visible = this.allExtIdMap.has(li);
+      const item = this.allExtIdMap.get(li);
       this.contextmenuTarget = visible ? li : null;
-      chrome.contextMenus.update(Config.removeExtensionId, {visible: visible});
+      chrome.contextMenus.update(Config.removeExtensionId, {
+        visible: visible,
+        title: chrome.i18n.getMessage("remove_extension", visible ? item.shortName || item.name : ""),
+      });
     }, true);
     chrome.management.onEnabled.addListener(item => this.toggleExtensionState(item));
     chrome.management.onDisabled.addListener(item => this.toggleExtensionState(item));
@@ -117,7 +121,7 @@ class ExtensionManager {
     chrome.management.onUninstalled.addListener(item => this.renderExtensions());
     chrome.contextMenus.onClicked.addListener((info, tab) => {
       if (this.allExtIdMap.has(this.contextmenuTarget)) {
-        const id = this.allExtIdMap.get(this.contextmenuTarget);
+        const id = this.allExtIdMap.get(this.contextmenuTarget).id;
         chrome.management.uninstall(id);
       }
     });
@@ -129,7 +133,7 @@ class ExtensionManager {
   toggleExtensionState(item) {
     for (const li of this.nodes.ul.children) {
       if (this.allExtIdMap.has(li)) {
-        if (this.allExtIdMap.get(li) === item.id) {
+        if (this.allExtIdMap.get(li).id === item.id) {
           this.renderExtensionState(li, item);
           break;
         }

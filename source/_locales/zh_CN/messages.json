@@ -15,7 +15,12 @@
     "message": "启用扩展"
   },
   "remove_extension": {
-    "message": "移除扩展"
+    "message": "移除 $extension_name$",
+    "placeholders": {
+      "extension_name": {
+        "content": "$1"
+      }
+    }
   },
   "one_key_disable": {
     "message": "禁用全部扩展"

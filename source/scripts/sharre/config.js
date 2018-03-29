@@ -5,13 +5,6 @@
 export class Config {
 
   /**
-   * @desc Contextmenu id of uninstall extension
-   */
-  static get removeExtensionId() {
-    return "remove_extension_id_0";
-  }
-
-  /**
    * @desc key of chrome.StorageArea
    * @desc 用于存储扩展类型的状态
    */

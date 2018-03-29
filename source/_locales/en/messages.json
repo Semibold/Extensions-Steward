@@ -11,14 +11,6 @@
   "enable_extension": {
     "message": "Enable extension"
   },
-  "remove_extension": {
-    "message": "Remove $extension_name$",
-    "placeholders": {
-      "extension_name": {
-        "content": "$1"
-      }
-    }
-  },
   "one_key_disable": {
     "message": "Disable all extensions"
   },

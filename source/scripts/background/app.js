@@ -1,16 +1,3 @@
-import {Config} from "../sharre/config.js";
-
-/**
- * @desc 右键菜单：卸载扩展
- */
-chrome.contextMenus.create({
-  id: Config.removeExtensionId,
-  title: chrome.i18n.getMessage("remove_extension"),
-  visible: false,
-  contexts: ["page"],
-  documentUrlPatterns: [chrome.runtime.getURL("popup.html")],
-});
-
 /**
  * @desc Omnibox default suggestion
  */

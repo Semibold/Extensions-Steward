@@ -7,7 +7,6 @@ class ExtensionManager {
     this.excludeType = excludeType;
     this.allExtIdMap = new WeakMap();
     this.eidDisabledSet = new Set();
-    this.contextmenuTarget = null;
     this.nodes = {
       h1: document.createElement("h1"),
       ul: document.createElement("ul"),
@@ -105,26 +104,10 @@ class ExtensionManager {
         chrome.management.get(id, item => chrome.management.setEnabled(item.id, !item.enabled));
       }
     });
-    document.addEventListener("contextmenu", e => {
-      const li = e.target.closest("li");
-      const visible = this.allExtIdMap.has(li);
-      const item = this.allExtIdMap.get(li);
-      this.contextmenuTarget = visible ? li : null;
-      chrome.contextMenus.update(Config.removeExtensionId, {
-        visible: visible,
-        title: chrome.i18n.getMessage("remove_extension", visible ? item.shortName || item.name : ""),
-      });
-    }, true);
     chrome.management.onEnabled.addListener(item => this.toggleExtensionState(item));
     chrome.management.onDisabled.addListener(item => this.toggleExtensionState(item));
     chrome.management.onInstalled.addListener(item => this.renderExtensions());
     chrome.management.onUninstalled.addListener(item => this.renderExtensions());
-    chrome.contextMenus.onClicked.addListener((info, tab) => {
-      if (this.allExtIdMap.has(this.contextmenuTarget)) {
-        const id = this.allExtIdMap.get(this.contextmenuTarget).id;
-        chrome.management.uninstall(id);
-      }
-    });
   }
 
   /**

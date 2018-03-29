@@ -17,10 +17,10 @@
     "persistent": true
   },
   "homepage_url": "https://github.com/Aqours/Extensions-Steward",
-  "minimum_chrome_version": "66",
   "omnibox": {
     "keyword": "ems"
   },
+  "minimum_chrome_version": "66",
   "options_ui": {
     "page": "options.html",
     "chrome_style": true

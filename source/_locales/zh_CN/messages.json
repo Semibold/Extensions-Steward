@@ -1,3 +1,55 @@
 {
-
+  "ext_name": {
+    "message": "扩展管家"
+  },
+  "ext_desc": {
+    "message": "扩展管家，快速的启用、禁用及移除扩展"
+  },
+  "get_more_extensions": {
+    "message": "获取更多扩展程序"
+  },
+  "disable_extension": {
+    "message": "禁用扩展"
+  },
+  "enable_extension": {
+    "message": "启用扩展"
+  },
+  "remove_extension": {
+    "message": "移除扩展"
+  },
+  "one_key_disable": {
+    "message": "禁用全部扩展"
+  },
+  "one_key_restore": {
+    "message": "还原已禁扩展"
+  },
+  "omnibox_default_suggestion": {
+    "message": "在 Chrome 网上商店中搜索应用"
+  },
+  "options_title": {
+    "message": "扩展管家选项"
+  },
+  "options_extension_type": {
+    "message": "管理已勾选类型的扩展"
+  },
+  "options_extension": {
+    "message": "Extension",
+    "description": "No translation required"
+  },
+  "options_hosted_app": {
+    "message": "Hosted app",
+    "description": "No translation required"
+  },
+  "options_packaged_app": {
+    "message": "Packaged app",
+    "description": "No translation required"
+  },
+  "options_legacy_packaged_app": {
+    "message": "Legacy packaged app",
+    "description": "No translation required"
+  },
+  "options_theme": {
+    "message": "Theme",
+    "description": "No translation required"
+  }
 }

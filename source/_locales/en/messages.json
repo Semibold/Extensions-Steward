@@ -4,5 +4,52 @@
   },
   "ext_desc": {
     "message": "Extensions Steward, Extensions Manager"
+  },
+  "get_more_extensions": {
+    "message": "Get more extensions"
+  },
+  "disable_extension": {
+    "message": "Disable extension"
+  },
+  "enable_extension": {
+    "message": "Enable extension"
+  },
+  "remove_extension": {
+    "message": "Remove extension"
+  },
+  "one_key_disable": {
+    "message": "Disable all extensions"
+  },
+  "one_key_restore": {
+    "message": "Restore disabled extensions"
+  },
+  "omnibox_default_suggestion": {
+    "message": "Search input in Chrome webstore"
+  },
+  "options_title": {
+    "message": "Extensions Steward Options"
+  },
+  "options_extension_type": {
+    "message": "Select the type(s) which you want to manage"
+  },
+  "options_extension": {
+    "message": "Extension",
+    "description": "No translation required"
+  },
+  "options_hosted_app": {
+    "message": "Hosted app",
+    "description": "No translation required"
+  },
+  "options_packaged_app": {
+    "message": "Packaged app",
+    "description": "No translation required"
+  },
+  "options_legacy_packaged_app": {
+    "message": "Legacy packaged app",
+    "description": "No translation required"
+  },
+  "options_theme": {
+    "message": "Theme",
+    "description": "No translation required"
   }
 }

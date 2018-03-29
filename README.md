@@ -16,3 +16,11 @@
 ![omnibox-search](screenshot/omnibox-search.gif)
 
 使用 Omnibox（地址栏）方便的搜索 Chrome 扩展
+
+
+## FAQ
+
+- 为什么不提供移除其他扩展的功能？
+  + 由于缺少设计方案，因此暂时不提供此功能
+- 触发 Omnibox（地址栏）事件的关键字是什么意思？
+  + Extensions Management Searcher 首字母的缩写（ems）

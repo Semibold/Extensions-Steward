@@ -25,25 +25,5 @@
   },
   "options_extension_type": {
     "message": "管理已勾选类型的扩展"
-  },
-  "options_extension": {
-    "message": "Extension",
-    "description": "No translation required"
-  },
-  "options_hosted_app": {
-    "message": "Hosted app",
-    "description": "No translation required"
-  },
-  "options_packaged_app": {
-    "message": "Packaged app",
-    "description": "No translation required"
-  },
-  "options_legacy_packaged_app": {
-    "message": "Legacy packaged app",
-    "description": "No translation required"
-  },
-  "options_theme": {
-    "message": "Theme",
-    "description": "No translation required"
   }
 }

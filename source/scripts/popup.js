@@ -1,4 +1,4 @@
-import {Config} from "../sharre/config.js";
+import {Config} from "./sharre/config.js";
 
 class ExtensionManager {
 

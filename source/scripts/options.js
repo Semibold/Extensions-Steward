@@ -1,5 +1,5 @@
-import {i18nLocale} from "../sharre/i18n-locale.js";
-import {Config} from "../sharre/config.js";
+import {i18nLocale} from "./sharre/i18n-locale.js";
+import {Config} from "./sharre/config.js";
 
 /**
  * @desc i18n

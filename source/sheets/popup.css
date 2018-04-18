@@ -1,64 +1,66 @@
-@import "base/base.css";
-@import "base/scrollbar.css";
-
-#controller {
-    font-size: 14px;
-    color: #333;
-    user-select: none;
+#app {
+  font-size: 14px;
+  color: #333;
+  user-select: none;
+  width: 280px;
 }
 
-#controller h1 {
-    margin-top: 0;
-    margin-bottom: 0;
-    font-size: 14px;
-    font-weight: normal;
-    text-align: center;
+h1 {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: normal;
+  text-align: center;
 }
 
-#controller ul {
-    margin-top: 0;
-    margin-bottom: 0;
-    padding-left: 0;
-    list-style-type: none;
-    width: 260px;
+ul {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 0;
+  list-style-type: none;
 }
 
-#controller h1,
-#controller ul li {
-    margin: 6px 4px;
-    height: 32px;
-    line-height: 32px;
-    border-radius: 2px;
-    box-shadow: 0 0 0 1px #e3e3e3, 0 0 2px 0 rgba(229, 233, 239, 0.3);
-    transition: background-color 0.15s;
-    overflow: hidden;
-    cursor: pointer;
+h1,
+ul li {
+  margin: 6px 4px;
+  height: 32px;
+  line-height: 32px;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px #e3e3e3, 0 0 2px 0 rgba(229, 233, 239, 0.3);
+  transition: background-color 0.15s;
+  overflow: hidden;
+  cursor: pointer;
 }
 
-#controller h1:hover,
-#controller ul li:hover {
-    background-color: rgb(229, 233, 239);
+ul li {
+  display: flex;
+  align-items: center;
 }
 
-#controller ul li[data-enabled="false"] {
-    background-color: rgb(229, 233, 239);
+h1:hover,
+ul li:hover {
+  background-color: rgb(229, 233, 239);
 }
 
-#controller ul li[data-enabled="false"]:hover {
-    background-color: #fff;
+ul li[data-enabled="false"] {
+  background-color: rgb(229, 233, 239);
 }
 
-#controller img {
-    float: left;
-    margin: 8px;
-    width: 16px;
-    height: 16px;
+ul li[data-enabled="false"]:hover {
+  background-color: #fff;
 }
 
-#controller span {
-    float: left;
-    width: 210px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
+img {
+  flex: 0 0 auto;
+  margin: auto 4px auto 8px;
+  width: 16px;
+  height: 16px;
+}
+
+span {
+  flex: 1 1 100%;
+  margin: auto 8px auto 4px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }

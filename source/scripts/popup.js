@@ -1,157 +1,173 @@
+import {Config} from "./sharre/config.js";
+
 class ExtensionManager {
 
-    constructor() {
-        this.impurity = {
-            id: chrome.runtime.id,
-            type: "theme",
-        };
-        this.domNodes = {
-            h1: document.createElement("h1"),
-            ul: document.createElement("ul"),
-            controller: document.getElementById("controller"),
-        };
-        this.allExtensionInfoMap = new WeakMap();
-        this.disabledExtensionIdSet = new Set();
-        this.extensionIdStorageKey = "disabled_extension_id";
-    }
+  constructor(excludeType) {
+    this.maxIconSize = 64;
+    this.excludeType = excludeType;
+    this.allExtIdMap = new WeakMap();
+    this.eidDisabledSet = new Set();
+    this.nodes = {
+      h1: document.createElement("h1"),
+      ul: document.createElement("ul"),
+      app: document.getElementById("app"),
+    };
+  }
 
-    /**
-     * @public
-     * @return {ExtensionManager}
-     */
-    decorator() {
-        this.readFromStorage();
-        this.renderAllExtension();
-        this.addGlobalListener();
-        return this;
-    }
+  /**
+   * @public
+   * @return {ExtensionManager}
+   */
+  init() {
+    this.readFromLocal();
+    this.renderExtensions();
+    this.addListeners();
+    return this;
+  }
 
-    /** @private */
-    readFromStorage() {
-        const data = localStorage.getItem(this.extensionIdStorageKey);
-        const list = data ? data.split(",") : [];
-        list.forEach(id => this.disabledExtensionIdSet.add(id));
-    }
+  /** @private */
+  readFromLocal() {
+    const data = localStorage.getItem(Config.deiKey);
+    const list = data ? data.split(",") : [];
+    list.forEach(id => this.eidDisabledSet.add(id));
+  }
 
-    /** @private */
-    writeToStorage() {
-        localStorage.setItem(this.extensionIdStorageKey, Array.from(this.disabledExtensionIdSet).join(","));
-    }
+  /** @private */
+  writeToLocal() {
+    localStorage.setItem(Config.deiKey, Array.from(this.eidDisabledSet).join(","));
+  }
 
-    /** @private */
-    renderAllExtension() {
-        chrome.management.getAll(list => {
-            const fragment = document.createDocumentFragment();
+  /** @private */
+  renderExtensions() {
+    chrome.management.getAll(list => {
+      const listFragment = new DocumentFragment();
+      list.sort((prev, next) => {
+        return prev.name.localeCompare(next.name, "en-US");
+      }).forEach(item => {
+        if (item.id === chrome.runtime.id || this.excludeType.has(item.type)) return;
+        const li = document.createElement("li");
+        const img = document.createElement("img");
+        const span = document.createElement("span");
+        li.append(img, span);
+        listFragment.append(li);
+        this.renderExtensionState(li, item);
+        this.allExtIdMap.set(li, item);
+      });
+      this.nodes.h1.textContent = chrome.i18n.getMessage(this.eidDisabledSet.size ? "one_key_restore" : "one_key_disable");
+      this.nodes.ul.textContent = this.nodes.app.textContent = "";
+      this.nodes.ul.append(listFragment);
+      this.nodes.app.append(this.nodes.h1, this.nodes.ul);
+    });
+  }
 
-            list.sort((prev, next) => {
-                return prev.name.localeCompare(next.name, "en-US");
-            }).forEach(item => {
-                if (item.id !== this.impurity.id && item.type !== this.impurity.type) {
-                    const li = document.createElement("li");
-                    const img = document.createElement("img");
-                    const span = document.createElement("span");
-
-                    span.textContent = item.name;
-                    img.alt = item.name;
-                    img.src = item.icons ? item.icons[0].url : `chrome://extension-icon/${item.id}/32/0`;
-                    li.title = chrome.i18n.getMessage(item.enabled ? "disable_item" : "enable_item");
-                    li.dataset.enabled = item.enabled;
-                    li.append(img, span);
-                    fragment.append(li);
-
-                    this.allExtensionInfoMap.set(li, item);
-                }
-            });
-
-            this.domNodes.h1.textContent = chrome.i18n.getMessage(this.disabledExtensionIdSet.size ? "one_key_restore" : "one_key_disable");
-            this.domNodes.ul.textContent = this.domNodes.controller.textContent = "";
-            this.domNodes.ul.append(fragment);
-            this.domNodes.controller.append(this.domNodes.h1, this.domNodes.ul);
-        });
-    }
-
-    /** @private */
-    addGlobalListener() {
-        this.domNodes.h1.addEventListener("click", e => {
-            if (this.disabledExtensionIdSet.size) {
-                this.restoreDisabledExtension();
-            } else {
-                this.disableAllExtension();
-            }
-        });
-
-        this.domNodes.ul.addEventListener("click", e => {
-            const li = e.target.closest("li");
-            if (this.allExtensionInfoMap.has(li)) {
-                const item = this.allExtensionInfoMap.get(li);
-                chrome.management.get(item.id, item => chrome.management.setEnabled(item.id, !item.enabled));
-            }
-        });
-
-        chrome.management.onEnabled.addListener(item => this.transformExtensionState(item, true));
-        chrome.management.onDisabled.addListener(item => this.transformExtensionState(item, false));
-        chrome.management.onInstalled.addListener(item => this.renderAllExtension());
-        chrome.management.onUninstalled.addListener(item => this.renderAllExtension());
-        document.addEventListener("contextmenu", e => e.preventDefault());
-    }
-
-    /**
-     * @private
-     * @param {ExtensionInfo} item
-     * @param {boolean} enabled
-     */
-    transformExtensionState(item, enabled) {
-        for (const li of this.domNodes.ul.children) {
-            if (this.allExtensionInfoMap.has(li)) {
-                if (this.allExtensionInfoMap.get(li).id === item.id) {
-                    li.title = chrome.i18n.getMessage(enabled ? "disable_item" : "enable_item");
-                    li.dataset.enabled = enabled;
-                    break;
-                }
-            }
+  /**
+   * @private
+   */
+  renderExtensionState(li, item) {
+    const img = li.querySelector("img");
+    const span = li.querySelector("span");
+    const iconInfo = {
+      size: 32,
+      url: `chrome://extension-icon/${item.id}/32/0`,
+    };
+    if (item.icons && item.icons.length) {
+      const firstIcon = item.icons[0];
+      const restIcons = item.icons.slice(1);
+      iconInfo.size = firstIcon.size;
+      iconInfo.url = firstIcon.url;
+      for (const icon of restIcons) {
+        if (icon.size > iconInfo.size && icon.size < this.maxIconSize) {
+          iconInfo.size = icon.size;
+          iconInfo.url = icon.url;
         }
+      }
     }
+    span.textContent = img.alt = item.shortName || item.name;
+    img.src = `${iconInfo.url}${item.enabled ? "" : "?grayscale=true"}`;
+    li.title = chrome.i18n.getMessage(item.enabled ? "disable_extension" : "enable_extension");
+    li.dataset.enabled = item.enabled;
+  }
 
-    /** @private */
-    disableAllExtension() {
-        chrome.management.getAll(list => {
-            const filtered = list.filter(item => item.id !== this.impurity.id && item.type !== this.impurity.type && item.enabled);
-            const tailId = Boolean(filtered.length) && filtered[filtered.length - 1].id;
+  /** @private */
+  addListeners() {
+    this.nodes.h1.addEventListener("click", e => {
+      if (this.eidDisabledSet.size) {
+        this.oneKeyRestore();
+      } else {
+        this.oneKeyDisable();
+      }
+    });
+    this.nodes.ul.addEventListener("click", e => {
+      const li = e.target.closest("li");
+      if (this.allExtIdMap.has(li)) {
+        const id = this.allExtIdMap.get(li).id;
+        chrome.management.get(id, item => chrome.management.setEnabled(item.id, !item.enabled));
+      }
+    });
+    chrome.management.onEnabled.addListener(item => this.toggleExtensionState(item));
+    chrome.management.onDisabled.addListener(item => this.toggleExtensionState(item));
+    chrome.management.onInstalled.addListener(item => this.renderExtensions());
+    chrome.management.onUninstalled.addListener(item => this.renderExtensions());
+  }
 
-            while (filtered.length) {
-                const item = filtered.shift();
-                chrome.management.setEnabled(item.id, false, () => {
-                    this.disabledExtensionIdSet.add(item.id);
-                    if (item.id === tailId) {
-                        this.writeToStorage();
-                        this.domNodes.h1.textContent = chrome.i18n.getMessage("one_key_restore");
-                    }
-                })
-            }
+  /**
+   * @private
+   */
+  toggleExtensionState(item) {
+    for (const li of this.nodes.ul.children) {
+      if (this.allExtIdMap.has(li)) {
+        if (this.allExtIdMap.get(li).id === item.id) {
+          this.renderExtensionState(li, item);
+          break;
+        }
+      }
+    }
+  }
+
+  /** @private */
+  oneKeyDisable() {
+    chrome.management.getAll(list => {
+      const filtered = list.filter(item => item.id !== chrome.runtime.id && !this.excludeType.has(item.type) && item.enabled);
+      const tailId = Boolean(filtered.length) && filtered[filtered.length - 1].id;
+      while (filtered.length) {
+        const item = filtered.shift();
+        chrome.management.setEnabled(item.id, false, () => {
+          this.eidDisabledSet.add(item.id);
+          if (item.id === tailId) {
+            this.writeToLocal();
+            this.nodes.h1.textContent = chrome.i18n.getMessage("one_key_restore");
+          }
         });
-    }
+      }
+    });
+  }
 
-    /** @private */
-    restoreDisabledExtension() {
-        chrome.management.getAll(list => {
-            const disabledRecently = Array.from(this.disabledExtensionIdSet);
-            const disabledExisting = new Set(list.map(item => {
-                if (item.id !== this.impurity.id && item.type !== this.impurity.type && !item.enabled) {
-                    return item.id;
-                }
-            }));
-
-            while (disabledRecently.length) {
-                const id = disabledRecently.shift();
-                disabledExisting.has(id) && chrome.management.setEnabled(id, true);
-            }
-
-            this.disabledExtensionIdSet.clear();
-            this.writeToStorage();
-            this.domNodes.h1.textContent = chrome.i18n.getMessage("one_key_disable");
-        });
-    }
+  /** @private */
+  oneKeyRestore() {
+    chrome.management.getAll(list => {
+      const disabledRecently = Array.from(this.eidDisabledSet);
+      const disabledExisting = new Set(list.map(item => {
+        if (item.id !== chrome.runtime.id && !this.excludeType.has(item.type) && !item.enabled) {
+          return item.id;
+        }
+      }));
+      while (disabledRecently.length) {
+        const id = disabledRecently.shift();
+        disabledExisting.has(id) && chrome.management.setEnabled(id, true);
+      }
+      this.eidDisabledSet.clear();
+      this.writeToLocal();
+      this.nodes.h1.textContent = chrome.i18n.getMessage("one_key_disable");
+    })
+  }
 
 }
 
-new ExtensionManager().decorator();
+chrome.storage.sync.get(Config.etcKey, items => {
+  const excludeType = new Set();
+  const eTypeChecked = Object.assign(Config.eTypeChecked, items[Config.etcKey]);
+  for (const [type, checked] of Object.entries(eTypeChecked)) {
+    if (!checked) excludeType.add(type);
+  }
+  new ExtensionManager(excludeType).init();
+});

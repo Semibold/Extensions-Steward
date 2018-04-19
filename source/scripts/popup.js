@@ -48,11 +48,13 @@ class ExtensionManager {
         const li = document.createElement("li");
         const img = document.createElement("img");
         const span = document.createElement("span");
+        li.tabIndex = 0;
         li.append(img, span);
         listFragment.append(li);
         this.renderExtensionState(li, item);
         this.allExtIdMap.set(li, item);
       });
+      this.nodes.h1.tabIndex = 0;
       this.nodes.h1.textContent = chrome.i18n.getMessage(this.eidDisabledSet.size ? "one_key_restore" : "one_key_disable");
       this.nodes.ul.textContent = this.nodes.app.textContent = "";
       this.nodes.ul.append(listFragment);

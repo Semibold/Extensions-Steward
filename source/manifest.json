@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "__MSG_ext_name__",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "default_locale": "en",
   "description": "__MSG_ext_desc__",
   "icons": {
@@ -15,6 +15,13 @@
   "background": {
     "page": "background.html",
     "persistent": true
+  },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Shift+Alt+Z"
+      }
+    }
   },
   "homepage_url": "https://github.com/Aqours/Extensions-Steward",
   "omnibox": {

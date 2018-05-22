@@ -13,7 +13,7 @@ export class Config {
     }
 
     /**
-     * @desc key of browser.StorageArea
+     * @desc key of chrome.StorageArea
      * @desc 用于存储被批量方式禁用的扩展 id
      */
     static get deiKey() {

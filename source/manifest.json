@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "__MSG_ext_name__",
-  "version": "3.0.3",
+  "version": "3.1.0",
   "default_locale": "en",
   "description": "__MSG_ext_desc__",
   "icons": {
@@ -10,10 +10,10 @@
     "128": "icons/128.png"
   },
   "browser_action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup/index.html"
   },
   "background": {
-    "page": "background.html",
+    "page": "backend/index.html",
     "persistent": true
   },
   "commands": {
@@ -23,13 +23,13 @@
       }
     }
   },
-  "homepage_url": "https://github.com/Aqours/Extensions-Steward",
+  "homepage_url": "https://github.com/Semibold/Extensions-Steward",
   "omnibox": {
     "keyword": "ems"
   },
   "minimum_chrome_version": "66",
   "options_ui": {
-    "page": "options.html",
+    "page": "options/index.html",
     "chrome_style": true
   },
   "permissions": [

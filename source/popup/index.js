@@ -1,4 +1,4 @@
-import {Config} from "./sharre/config.js";
+import {Config} from "../sharre/config.js";
 
 class ExtensionManager {
 
@@ -48,11 +48,13 @@ class ExtensionManager {
                 const li = document.createElement("li");
                 const img = document.createElement("img");
                 const span = document.createElement("span");
+                li.tabIndex = 0;
                 li.append(img, span);
                 listFragment.append(li);
                 this.renderExtensionState(li, item);
                 this.allExtIdMap.set(li, item);
             });
+            this.nodes.h1.tabIndex = 0;
             this.nodes.h1.textContent = chrome.i18n.getMessage(this.eidDisabledSet.size ? "one_key_restore" : "one_key_disable");
             this.nodes.ul.textContent = this.nodes.app.textContent = "";
             this.nodes.ul.append(listFragment);
@@ -108,6 +110,46 @@ class ExtensionManager {
         chrome.management.onDisabled.addListener(item => this.toggleExtensionState(item));
         chrome.management.onInstalled.addListener(item => this.renderExtensions());
         chrome.management.onUninstalled.addListener(item => this.renderExtensions());
+        document.addEventListener("keyup", e => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                e.target.click();
+            }
+        });
+        document.addEventListener("keydown", e => {
+            switch (e.key) {
+                case "Tab":
+                    e.preventDefault();
+                    this.focusClickableElement(e.shiftKey ? -1 : 1);
+                    break;
+                case "ArrowUp":
+                    e.preventDefault();
+                    this.focusClickableElement(-1);
+                    break;
+                case "ArrowDown":
+                    e.preventDefault();
+                    this.focusClickableElement(1);
+                    break;
+            }
+        });
+    }
+
+    /**
+     * @private
+     */
+    focusClickableElement(offset) {
+        const clickableElements = [this.nodes.h1].concat(Array.from(this.nodes.ul.children));
+        const index = clickableElements.findIndex(element => element === document.activeElement);
+        switch (offset) {
+            case 1: {
+                clickableElements[(index + offset) % clickableElements.length].focus();
+                break;
+            }
+            case -1: {
+                clickableElements[(Math.max(index, 0) + offset + clickableElements.length) % clickableElements.length].focus();
+                break;
+            }
+        }
     }
 
     /**

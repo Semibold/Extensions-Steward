@@ -3,6 +3,6 @@
 .vscode
 
 node_modules
-deploy
+dist
 
 npm-debug.log*

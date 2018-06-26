@@ -15,9 +15,8 @@ env:
     - REFRESH_TOKEN=$WS_REFRESH_TOKEN
 
 before_script:
-  - npm i -g chrome-webstore-upload-cli
   - npm i
   - npm run bundle
 
 script:
-  - webstore upload --source $SOURCE --extension-id $EXTENSION_ID --client-id $CLIENT_ID --client-secret $CLIENT_SECRET --refresh-token $REFRESH_TOKEN --auto-publish
+  - npx --no-install webstore upload --source $SOURCE --extension-id $EXTENSION_ID --client-id $CLIENT_ID --client-secret $CLIENT_SECRET --refresh-token $REFRESH_TOKEN --auto-publish

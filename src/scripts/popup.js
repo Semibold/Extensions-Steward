@@ -1,7 +1,9 @@
 import {Config} from "./config.js";
 
 class ExtensionManager {
-
+    /**
+     * @param {Set<string>} excludeType
+     */
     constructor(excludeType) {
         this.maxIconSize = 64;
         this.excludeType = excludeType;
@@ -55,7 +57,8 @@ class ExtensionManager {
                 this.allExtIdMap.set(li, item);
             });
             this.nodes.h1.tabIndex = 0;
-            this.nodes.h1.textContent = chrome.i18n.getMessage(this.eidDisabledSet.size ? "one_key_restore" : "one_key_disable");
+            this.nodes.h1.textContent = chrome.i18n.getMessage(
+                this.eidDisabledSet.size ? "one_key_restore" : "one_key_disable");
             this.nodes.ul.textContent = this.nodes.app.textContent = "";
             this.nodes.ul.append(listFragment);
             this.nodes.app.append(this.nodes.h1, this.nodes.ul);
@@ -146,7 +149,8 @@ class ExtensionManager {
                 break;
             }
             case -1: {
-                clickableElements[(Math.max(index, 0) + offset + clickableElements.length) % clickableElements.length].focus();
+                clickableElements[
+                    (Math.max(index, 0) + offset + clickableElements.length) % clickableElements.length].focus();
                 break;
             }
         }
@@ -169,7 +173,8 @@ class ExtensionManager {
     /** @private */
     oneKeyDisable() {
         chrome.management.getAll(list => {
-            const filtered = list.filter(item => item.id !== chrome.runtime.id && !this.excludeType.has(item.type) && item.enabled);
+            const filtered = list.filter(item =>
+                item.id !== chrome.runtime.id && !this.excludeType.has(item.type) && item.enabled);
             const tailId = Boolean(filtered.length) && filtered[filtered.length - 1].id;
             while (filtered.length) {
                 const item = filtered.shift();
@@ -202,7 +207,6 @@ class ExtensionManager {
             this.nodes.h1.textContent = chrome.i18n.getMessage("one_key_disable");
         })
     }
-
 }
 
 chrome.storage.sync.get(Config.etcKey, items => {

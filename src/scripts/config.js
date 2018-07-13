@@ -3,7 +3,6 @@
  * @desc public config
  */
 export class Config {
-
     /**
      * @desc key of chrome.StorageArea
      * @desc 用于存储扩展类型的状态
@@ -47,5 +46,4 @@ export class Config {
             theme: false,
         };
     }
-
 }

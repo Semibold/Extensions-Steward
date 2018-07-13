@@ -9,7 +9,7 @@ chrome.omnibox.setDefaultSuggestion({
  * @desc Chrome webstore search
  */
 chrome.omnibox.onInputEntered.addListener((text, disposition) => {
-    const url = `https://chrome.google.com/webstore/search/${text}`;
+    const url = `https://chrome.google.com/webstore/search/${encodeURIComponent(text)}`;
     switch (disposition) {
         case "currentTab":
             chrome.tabs.update({url: url});

@@ -5,6 +5,7 @@ class ExtensionManager {
      * @param {Set<string>} excludeType
      */
     constructor(excludeType) {
+        this.partition = false;
         this.maxIconSize = 64;
         this.excludeType = excludeType;
         this.allExtIdMap = new WeakMap();
@@ -40,12 +41,29 @@ class ExtensionManager {
     }
 
     /** @private */
+    sortByASCII(list) {
+        const defSortFunction = (prev, next) => prev.name.localeCompare(next.name, "en-US");
+        if (this.partition) {
+            const enabled = [];
+            const disabled = [];
+            for (const item of list) {
+                if (item.enabled) {
+                    enabled.push(item);
+                } else {
+                    disabled.push(item);
+                }
+            }
+            return enabled.sort(defSortFunction).concat(disabled.sort(defSortFunction));
+        } else {
+            return list.sort(defSortFunction);
+        }
+    }
+
+    /** @private */
     renderExtensions() {
         chrome.management.getAll(list => {
             const listFragment = new DocumentFragment();
-            list.sort((prev, next) => {
-                return prev.name.localeCompare(next.name, "en-US");
-            }).forEach(item => {
+            this.sortByASCII(list).forEach(item => {
                 if (item.id === chrome.runtime.id || this.excludeType.has(item.type)) return;
                 const li = document.createElement("li");
                 const img = document.createElement("img");

@@ -1,5 +1,7 @@
 # Extensions-Steward
 
+> [Changelog](changelog.md)
+
 > Chrome Extension
 
 ## Introduction

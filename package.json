@@ -29,7 +29,7 @@
     "@types/merge-stream": "1.1.2",
     "@types/node": "8.9.5",
     "chrome-webstore-upload-cli": "1.1.1",
-    "gulp": "3.9.1",
+    "gulp": "4.0.0",
     "gulp-json-modify": "1.0.2",
     "gulp-zip": "4.1.0",
     "husky": "1.3.1",

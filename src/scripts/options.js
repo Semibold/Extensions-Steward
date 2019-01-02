@@ -1,5 +1,5 @@
-import {locale} from "./locale.js";
-import {Config} from "./config.js";
+import { locale } from "./locale.js";
+import { Config } from "./config.js";
 
 /**
  * @desc i18n

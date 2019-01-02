@@ -16,7 +16,7 @@ export class Config {
      * @desc 用于存储被批量方式禁用的扩展 id
      */
     static get deiKey() {
-        return "disabled_extension_id"
+        return "disabled_extension_id";
     }
 
     /**

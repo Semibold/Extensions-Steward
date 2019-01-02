@@ -1,4 +1,4 @@
-import {Config} from "./config.js";
+import { Config } from "./config.js";
 
 class ExtensionManager {
     /**
@@ -76,7 +76,8 @@ class ExtensionManager {
             });
             this.nodes.h1.tabIndex = 0;
             this.nodes.h1.textContent = chrome.i18n.getMessage(
-                this.eidDisabledSet.size ? "one_key_restore" : "one_key_disable");
+                this.eidDisabledSet.size ? "one_key_restore" : "one_key_disable",
+            );
             this.nodes.ul.textContent = this.nodes.app.textContent = "";
             this.nodes.ul.append(listFragment);
             this.nodes.app.append(this.nodes.h1, this.nodes.ul);
@@ -168,7 +169,8 @@ class ExtensionManager {
             }
             case -1: {
                 clickableElements[
-                    (Math.max(index, 0) + offset + clickableElements.length) % clickableElements.length].focus();
+                    (Math.max(index, 0) + offset + clickableElements.length) % clickableElements.length
+                ].focus();
                 break;
             }
         }
@@ -191,8 +193,9 @@ class ExtensionManager {
     /** @private */
     oneKeyDisable() {
         chrome.management.getAll(list => {
-            const filtered = list.filter(item =>
-                item.id !== chrome.runtime.id && !this.excludeType.has(item.type) && item.enabled);
+            const filtered = list.filter(
+                item => item.id !== chrome.runtime.id && !this.excludeType.has(item.type) && item.enabled,
+            );
             const tailId = Boolean(filtered.length) && filtered[filtered.length - 1].id;
             while (filtered.length) {
                 const item = filtered.shift();
@@ -211,11 +214,13 @@ class ExtensionManager {
     oneKeyRestore() {
         chrome.management.getAll(list => {
             const disabledRecently = Array.from(this.eidDisabledSet);
-            const disabledExisting = new Set(list.map(item => {
-                if (item.id !== chrome.runtime.id && !this.excludeType.has(item.type) && !item.enabled) {
-                    return item.id;
-                }
-            }));
+            const disabledExisting = new Set(
+                list.map(item => {
+                    if (item.id !== chrome.runtime.id && !this.excludeType.has(item.type) && !item.enabled) {
+                        return item.id;
+                    }
+                }),
+            );
             while (disabledRecently.length) {
                 const id = disabledRecently.shift();
                 disabledExisting.has(id) && chrome.management.setEnabled(id, true);
@@ -223,7 +228,7 @@ class ExtensionManager {
             this.eidDisabledSet.clear();
             this.writeToLocal();
             this.nodes.h1.textContent = chrome.i18n.getMessage("one_key_disable");
-        })
+        });
     }
 }
 

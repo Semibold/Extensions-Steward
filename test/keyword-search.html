@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Keyword Search</title>
+    </head>
+    <body>
+        <script type="module">
+            import { KeywordSearch } from "../src/scripts/keyword-search.js";
+
+            const ks = new KeywordSearch([
+                { id: 1, name: "Adblock Plus" },
+                { id: 2, name: "Image Search Options" },
+                { id: 3, name: "JSONView" },
+                { id: 4, name: "ModHeader" },
+                { id: 5, name: "OneNote Web Clipper" },
+                { id: 6, name: "Pixiv Downloader" },
+                { id: 7, name: "Proxy SwitchyOmega" },
+                { id: 8, name: "Save to Pocket" },
+                { id: 9, name: "Tampermonkey" },
+                { id: 10, name: "Wappalyzer" },
+                { id: 11, name: "WhatFont" },
+                { id: 12, name: "微博图床" },
+                { id: 13, name: "惠惠购物助手" },
+                { id: 14, name: "有道划词" },
+                { id: 15, name: "简单 QR 生成器" },
+            ]);
+
+            console.log("[wbt]:", ks.search("wbt"));
+            console.log("[wbt]:", ks.search("wbt"));
+            console.log("[微bo]:", ks.search("微bo"));
+            console.log("[微博]:", ks.search("微博"));
+            console.log("[Qr]:", ks.search("Qr"));
+            console.log("[jdqr]:", ks.search("jdqr"));
+            console.log("[jdshengchq]:", ks.search("jdshengchq"));
+            console.log("[iso]:", ks.search("iso"));
+            console.log("[json]:", ks.search("json"));
+            console.log("[pid]:", ks.search("pid"));
+        </script>
+    </body>
+</html>

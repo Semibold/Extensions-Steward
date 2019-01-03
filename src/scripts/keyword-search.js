@@ -1,42 +1,65 @@
 import { getPinyinFromHanzi } from "./hanzi-to-pinyin.js";
 
 /**
- * Search chrome extensions
+ * Search chrome extensions in background page
  */
 export class KeywordSearch {
-    /**
-     * @param {ExtensionInfo[]} list
-     */
-    constructor(list) {
-        this.list = list;
+    constructor() {
         this.caches = new Map();
-        this.generateCaches();
+        this.generateAllCaches();
+        this.registerEvents();
     }
 
     /**
      * @private
      */
-    generateCaches() {
-        for (const item of this.list) {
-            const tokens = getPinyinFromHanzi(item.name);
-            const contents = { target: "", source: "" };
-            for (const token of tokens) {
-                contents.target += token.target.toLowerCase();
-                contents.source += token.source.toLowerCase();
+    generateAllCaches() {
+        chrome.management.getAll(result => {
+            for (const item of result) {
+                this.addItemCache(item);
             }
-            this.caches.set(item.id, { item, tokens, contents });
+        });
+    }
+
+    /**
+     * @private
+     * @param {chrome.management.ExtensionInfo} item
+     */
+    addItemCache(item) {
+        const tokens = getPinyinFromHanzi(item.name);
+        const contents = { target: "", source: "" };
+        for (const token of tokens) {
+            contents.target += token.target.toLowerCase();
+            contents.source += token.source.toLowerCase();
         }
+        this.caches.set(item.id, { item, tokens, contents });
+    }
+
+    /**
+     * @private
+     * @param {string} id
+     */
+    removeItemCache(id) {
+        this.caches.delete(id);
+    }
+
+    /**
+     * @private
+     */
+    registerEvents() {
+        chrome.management.onInstalled.addListener(item => this.addItemCache(item));
+        chrome.management.onUninstalled.addListener(id => this.removeItemCache(id));
     }
 
     /**
      * @public
      * @param {string} keyword - User input
-     * @return {ExtensionInfo[]}
+     * @return {chrome.management.ExtensionInfo[]}
      */
     search(keyword) {
         const result = [];
         if (!keyword) {
-            return this.list;
+            return Array.from(this.caches.values());
         }
         const chars = keyword
             .toLowerCase()

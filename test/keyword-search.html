@@ -8,7 +8,7 @@
         <script type="module">
             import { KeywordSearch } from "../src/scripts/keyword-search.js";
 
-            const ks = new KeywordSearch([
+            const result = [
                 { id: 1, name: "Adblock Plus" },
                 { id: 2, name: "Image Search Options" },
                 { id: 3, name: "JSONView" },
@@ -24,7 +24,18 @@
                 { id: 13, name: "惠惠购物助手" },
                 { id: 14, name: "有道划词" },
                 { id: 15, name: "简单 QR 生成器" },
-            ]);
+            ];
+
+            class TestKeywordSearch extends KeywordSearch {
+                generateAllCaches() {
+                    for (const item of result) {
+                        this.addItemCache(item);
+                    }
+                }
+                registerEvents() {}
+            }
+
+            const ks = new TestKeywordSearch();
 
             console.log("[wtc]:", ks.search("wtc"));
             console.log("[wb t]:", ks.search("wb t"));

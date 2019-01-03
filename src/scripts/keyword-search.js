@@ -18,16 +18,19 @@ export class KeywordSearch {
      */
     generateCaches() {
         for (const item of this.list) {
-            this.caches.set(item.id, {
-                item: item,
-                tokens: getPinyinFromHanzi(item.name),
-            });
+            const tokens = getPinyinFromHanzi(item.name);
+            const contents = { target: "", source: "" };
+            for (const token of tokens) {
+                contents.target += token.target.toLowerCase();
+                contents.source += token.source.toLowerCase();
+            }
+            this.caches.set(item.id, { item, tokens, contents });
         }
     }
 
     /**
      * @public
-     * @param {string} keyword
+     * @param {string} keyword - User input
      * @return {ExtensionInfo[]}
      */
     search(keyword) {
@@ -35,8 +38,12 @@ export class KeywordSearch {
         if (!keyword) {
             return this.list;
         }
+        const chars = keyword
+            .toLowerCase()
+            .replace(/\s+/, "")
+            .split("");
         for (const cache of this.caches.values()) {
-            if (this.isKeywordMatchName(cache.item.id, keyword)) {
+            if (this.isKeywordMatchName(cache.item.id, chars)) {
                 result.push(cache.item);
             }
         }
@@ -46,30 +53,18 @@ export class KeywordSearch {
     /**
      * @private
      * @param {string} id - Extension ID
-     * @param {string} keyword - User input
+     * @param {string[]} chars
      * @return {boolean}
      */
-    isKeywordMatchName(id, keyword) {
+    isKeywordMatchName(id, chars) {
         const cache = this.caches.get(id);
-        const chars = keyword
-            .toLowerCase()
-            .replace(/\s+/, "")
-            .split("");
-        if (!Array.isArray(cache.tokens)) {
-            return false;
-        }
         const pointers = { target: 0, source: 0 };
-        const contents = { target: "", source: "" };
-        for (const token of cache.tokens) {
-            contents.target += token.target.toLowerCase();
-            contents.source += token.source.toLowerCase();
-        }
         for (const char of chars) {
             if (pointers.target !== -1) {
-                pointers.target = contents.target.indexOf(char, pointers.target);
+                pointers.target = cache.contents.target.indexOf(char, pointers.target);
             }
             if (pointers.source !== -1) {
-                pointers.source = contents.source.indexOf(char, pointers.source);
+                pointers.source = cache.contents.source.indexOf(char, pointers.source);
             }
             if (pointers.target === -1 && pointers.source === -1) {
                 return false;

@@ -523,10 +523,12 @@ function addToken(sb, tokens, tokenType) {
  * space will be put into a Token, One Hanzi character which has pinyin will be treated as a
  * Token. If these is no China collator, the empty token array is returned.
  *
+ * @public
+ * @export
  * @param {string} input
  * @return {Token[]}
  */
-function getPinyinFromHanzi(input) {
+export function getPinyinFromHanzi(input) {
     if (typeof input !== "string") {
         throw new Error("`input` must be string.");
     }

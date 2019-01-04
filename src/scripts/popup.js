@@ -24,6 +24,7 @@ class ExtensionManager {
         this.getDisabledExtensionIds();
         this.renderFrameContent();
         this.registerUserInputEvent();
+        this.registerOtherEvents();
     }
 
     getLastSearchUserInput() {
@@ -100,16 +101,15 @@ class ExtensionManager {
         li.tabIndex = 0;
         li.append(img, span);
         ul.append(li);
-        this.diagramWeakMap.set(li, item);
-        this.renderItemState(li);
+        this.renderItemState(li, item);
+        this.diagramWeakMap.set(li, item.id);
     }
 
     /**
      * @param {HTMLElement} li
+     * @param {chrome.management.ExtensionInfo} item
      */
-    renderItemState(li) {
-        if (!this.diagramWeakMap.has(li)) return;
-        const item = this.diagramWeakMap.get(li);
+    renderItemState(li, item) {
         const img = li.querySelector("img");
         const span = li.querySelector("span");
         const iconInfo = { size: 32, url: `chrome://extension-icon/${item.id}/32/0` };
@@ -128,7 +128,7 @@ class ExtensionManager {
         span.textContent = img.alt = item.shortName || item.name;
         img.src = `${iconInfo.url}${item.enabled ? "" : "?grayscale=true"}`;
         li.title = chrome.i18n.getMessage(item.enabled ? "disable_extension" : "enable_extension");
-        li.dataset.enabled = item.enabled;
+        li.dataset.enabled = item.enabled.toString();
     }
 
     registerUserInputEvent() {
@@ -172,58 +172,60 @@ class ExtensionManager {
         }, 100);
     }
 
-    // registerEvents() {
-    // chrome.management.onEnabled.addListener(item => this.toggleItemState(item));
-    // chrome.management.onDisabled.addListener(item => this.toggleItemState(item));
-    // chrome.management.onInstalled.addListener(item => this.renderFrameContent());
-    // chrome.management.onUninstalled.addListener(id => this.renderFrameContent());
-    // document.addEventListener("keyup", e => {
-    //     if (e.key === "Enter") {
-    //         e.preventDefault();
-    //         e.target.click();
-    //     }
-    // });
-    // document.addEventListener("keydown", e => {
-    //     switch (e.key) {
-    //         case "Tab":
-    //             e.preventDefault();
-    //             this.focusClickableElement(e.shiftKey ? -1 : 1);
-    //             break;
-    //         case "ArrowUp":
-    //             e.preventDefault();
-    //             this.focusClickableElement(-1);
-    //             break;
-    //         case "ArrowDown":
-    //             e.preventDefault();
-    //             this.focusClickableElement(1);
-    //             break;
-    //     }
-    // });
-    // this.container.addEventListener("click", e => {
-    //     const node = e.target;
-    //     if (!node) return;
-    //     if (node.closest('h1')) {
-    //         this.disabledExtensionIdSet.size ? this.oneKeyRestore() : this.oneKeyDisable();
-    //     } else {
-    //         const li = node.closest('li');
-    //         if (this.diagramWeakMap.has(li)) {
-    //             chrome.management.get(this.diagramWeakMap.get(li).id, item => chrome.management.setEnabled(item.id, !item.enabled));
-    //         }
-    //     }
-    // });
-    // }
+    registerOtherEvents() {
+        this.container.addEventListener("click", e => {
+            const node = e.target;
+            if (!node) return;
+            if (node.closest("h1")) {
+                // this.disabledExtensionIdSet.size ? this.oneKeyRestore() : this.oneKeyDisable();
+            } else {
+                const li = node.closest("li");
+                if (this.diagramWeakMap.has(li)) {
+                    chrome.management.get(this.diagramWeakMap.get(li), item =>
+                        chrome.management.setEnabled(item.id, !item.enabled),
+                    );
+                }
+            }
+        });
+        chrome.management.onEnabled.addListener(item => this.toggleItemState(item));
+        chrome.management.onDisabled.addListener(item => this.toggleItemState(item));
+        chrome.management.onInstalled.addListener(item => this.continuousFilterFrameContent());
+        chrome.management.onUninstalled.addListener(id => this.continuousFilterFrameContent());
+        // document.addEventListener("keyup", e => {
+        //     if (e.key === "Enter") {
+        //         e.preventDefault();
+        //         e.target.click();
+        //     }
+        // });
+        // document.addEventListener("keydown", e => {
+        //     switch (e.key) {
+        //         case "Tab":
+        //             e.preventDefault();
+        //             this.focusClickableElement(e.shiftKey ? -1 : 1);
+        //             break;
+        //         case "ArrowUp":
+        //             e.preventDefault();
+        //             this.focusClickableElement(-1);
+        //             break;
+        //         case "ArrowDown":
+        //             e.preventDefault();
+        //             this.focusClickableElement(1);
+        //             break;
+        //     }
+        // });
+    }
 
-    // toggleItemState(item) {
-    //     for (const li of document.querySelectorAll('li')) {
-    //         if (this.diagramWeakMap.has(li)) {
-    //             if (this.diagramWeakMap.get(li).id === item.id) {
-    //                 this.renderItemState(li);
-    //                 break;
-    //             }
-    //         }
-    //     }
-    // }
-    //
+    toggleItemState(item) {
+        for (const li of document.querySelectorAll("li")) {
+            if (this.diagramWeakMap.has(li)) {
+                if (this.diagramWeakMap.get(li) === item.id) {
+                    this.renderItemState(li, item);
+                    break;
+                }
+            }
+        }
+    }
+
     // focusClickableElement(offset) {
     //     const clickableElements = [this.nodes.h1].concat(Array.from(this.nodes.ul.children));
     //     const index = clickableElements.findIndex(element => element === document.activeElement);

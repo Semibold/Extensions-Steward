@@ -61,17 +61,23 @@ class ExtensionManager {
         this.container.textContent = "";
     }
 
+    /**
+     * @param {string} [input]
+     * @return {chrome.management.ExtensionInfo[]}
+     */
+    getTargetExtensionInfos(input = "") {
+        return Array.from(SharreM.keywordSearch.search(input)).filter(
+            item => !(item.id === chrome.runtime.id || this.excludeTypeSet.has(item.type)),
+        );
+    }
+
     renderFrameContent() {
         const em = document.createElement("em");
         const h1 = document.createElement("h1");
         const ul = document.createElement("ul");
-        Array.from(SharreM.keywordSearch.search(this.lastSearchUserInput))
+        this.getTargetExtensionInfos(this.lastSearchUserInput)
             .sort((prev, next) => prev.name.localeCompare(next.name, "en-US"))
-            .forEach(item => {
-                if (item.id === chrome.runtime.id) return;
-                if (this.excludeTypeSet.has(item.type)) return;
-                this.renderItemContent(ul, item);
-            });
+            .forEach(item => this.renderItemContent(ul, item));
         this.renderLastSearchUserInput(em);
         this.renderFrameState(h1);
         this.fragemnt.append(em, h1, ul);
@@ -190,7 +196,7 @@ class ExtensionManager {
             const node = e.target;
             if (!node) return;
             if (node.closest("h1")) {
-                // this.disabledExtensionIdSet.size ? this.oneKeyRestore() : this.oneKeyDisable();
+                this.disabledExtensionIdSet.size ? this.oneKeyRestore() : this.oneKeyDisable();
             } else {
                 const li = node.closest("li");
                 if (this.diagramWeakMap.has(li)) {
@@ -200,32 +206,21 @@ class ExtensionManager {
                 }
             }
         });
+        document.addEventListener("keyup", e => {
+            const node = e.target;
+            if (!node) return;
+            if (e.key === "Enter") {
+                const s = node.closest("h1") || node.closest("li");
+                if (s) {
+                    e.preventDefault();
+                    s.click();
+                }
+            }
+        });
         chrome.management.onEnabled.addListener(item => this.toggleItemState(item));
         chrome.management.onDisabled.addListener(item => this.toggleItemState(item));
         chrome.management.onInstalled.addListener(item => this.continuousFilterFrameContent());
         chrome.management.onUninstalled.addListener(id => this.continuousFilterFrameContent());
-        // document.addEventListener("keyup", e => {
-        //     if (e.key === "Enter") {
-        //         e.preventDefault();
-        //         e.target.click();
-        //     }
-        // });
-        // document.addEventListener("keydown", e => {
-        //     switch (e.key) {
-        //         case "Tab":
-        //             e.preventDefault();
-        //             this.focusClickableElement(e.shiftKey ? -1 : 1);
-        //             break;
-        //         case "ArrowUp":
-        //             e.preventDefault();
-        //             this.focusClickableElement(-1);
-        //             break;
-        //         case "ArrowDown":
-        //             e.preventDefault();
-        //             this.focusClickableElement(1);
-        //             break;
-        //     }
-        // });
     }
 
     toggleItemState(item) {
@@ -240,61 +235,46 @@ class ExtensionManager {
         }
     }
 
-    // focusClickableElement(offset) {
-    //     const clickableElements = [this.nodes.h1].concat(Array.from(this.nodes.ul.children));
-    //     const index = clickableElements.findIndex(element => element === document.activeElement);
-    //     switch (offset) {
-    //         case 1: {
-    //             clickableElements[(index + offset) % clickableElements.length].focus();
-    //             break;
-    //         }
-    //         case -1: {
-    //             clickableElements[
-    //             (Math.max(index, 0) + offset + clickableElements.length) % clickableElements.length
-    //                 ].focus();
-    //             break;
-    //         }
-    //     }
-    // }
-    //
-    // oneKeyDisable() {
-    //     chrome.management.getAll(list => {
-    //         const filtered = list.filter(
-    //             item => item.id !== chrome.runtime.id && !this.excludeType.has(item.type) && item.enabled,
-    //         );
-    //         const tailId = Boolean(filtered.length) && filtered[filtered.length - 1].id;
-    //         while (filtered.length) {
-    //             const item = filtered.shift();
-    //             chrome.management.setEnabled(item.id, false, () => {
-    //                 this.eidDisabledSet.add(item.id);
-    //                 if (item.id === tailId) {
-    //                     this.writeToLocal();
-    //                     this.nodes.h1.textContent = chrome.i18n.getMessage("one_key_restore");
-    //                 }
-    //             });
-    //         }
-    //     });
-    // }
-    //
-    // oneKeyRestore() {
-    //     chrome.management.getAll(list => {
-    //         const disabledRecently = Array.from(this.eidDisabledSet);
-    //         const disabledExisting = new Set(
-    //             list.map(item => {
-    //                 if (item.id !== chrome.runtime.id && !this.excludeType.has(item.type) && !item.enabled) {
-    //                     return item.id;
-    //                 }
-    //             }),
-    //         );
-    //         while (disabledRecently.length) {
-    //             const id = disabledRecently.shift();
-    //             disabledExisting.has(id) && chrome.management.setEnabled(id, true);
-    //         }
-    //         this.eidDisabledSet.clear();
-    //         this.writeToLocal();
-    //         this.nodes.h1.textContent = chrome.i18n.getMessage("one_key_disable");
-    //     });
-    // }
+    oneKeyDisable() {
+        const list = this.getTargetExtensionInfos();
+        const filtered = list.filter(item => item.enabled);
+        const tailId = Boolean(filtered.length) && filtered[filtered.length - 1].id;
+        while (filtered.length) {
+            const item = filtered.shift();
+            chrome.management.setEnabled(item.id, false, () => {
+                this.disabledExtensionIdSet.add(item.id);
+                if (item.id === tailId) {
+                    const h1 = this.container.querySelector("h1");
+                    this.setDisabledExtensionIds();
+                    if (h1) {
+                        h1.textContent = chrome.i18n.getMessage("one_key_restore");
+                    }
+                }
+            });
+        }
+    }
+
+    oneKeyRestore() {
+        const list = this.getTargetExtensionInfos();
+        const disabledRecently = Array.from(this.disabledExtensionIdSet);
+        const disabledExisting = new Set(
+            list.map(item => {
+                if (!item.enabled) {
+                    return item.id;
+                }
+            }),
+        );
+        const h1 = this.container.querySelector("h1");
+        while (disabledRecently.length) {
+            const id = disabledRecently.shift();
+            disabledExisting.has(id) && chrome.management.setEnabled(id, true);
+        }
+        this.disabledExtensionIdSet.clear();
+        this.setDisabledExtensionIds();
+        if (h1) {
+            h1.textContent = chrome.i18n.getMessage("one_key_disable");
+        }
+    }
 }
 
 chrome.storage.sync.get([K_EXTENSION_TYPE_CHECKED, K_KEEP_LAST_SEARCH_STATUS], items => {

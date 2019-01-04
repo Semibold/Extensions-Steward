@@ -20,6 +20,15 @@
   "omnibox_default_suggestion": {
     "message": "在 Chrome 网上商店中搜索应用"
   },
+  "options_general": {
+    "message": "选项"
+  },
+  "options_update_details": {
+    "message": "通知我更新详情"
+  },
+  "options_search_status": {
+    "message": "保持上一次搜索的状态"
+  },
   "options_title": {
     "message": "扩展管家选项"
   },

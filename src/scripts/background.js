@@ -1,3 +1,5 @@
+import { KeywordSearch } from "./background/keyword-search.js";
+
 /**
  * @desc Omnibox default suggestion
  */
@@ -22,3 +24,10 @@ chrome.omnibox.onInputEntered.addListener((text, disposition) => {
             break;
     }
 });
+
+/**
+ * @desc Core Share Module (APIs)
+ */
+self.coreAPIs = {
+    keywordSearch: new KeywordSearch(),
+};

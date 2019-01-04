@@ -20,6 +20,15 @@
   "omnibox_default_suggestion": {
     "message": "Search input in Chrome webstore"
   },
+  "options_general": {
+    "message": "Options"
+  },
+  "options_update_details": {
+    "message": "Notify me to update details"
+  },
+  "options_search_status": {
+    "message": "Keep the status of the last search"
+  },
   "options_title": {
     "message": "Extensions Steward Options"
   },
@@ -45,5 +54,29 @@
   "options_theme": {
     "message": "Theme",
     "description": "No translation required"
+  },
+  "author_email": {
+    "message": "abc@hub.moe"
+  },
+  "project_issue": {
+    "message": "https://github.com/Semibold/Extensions-Steward/issues"
+  },
+  "project_readme": {
+    "message": "https://github.com/Semibold/Extensions-Steward/blob/$tag$/README.md",
+    "placeholders": {
+      "tag": {
+        "content": "$1",
+        "example": "1.0.1"
+      }
+    }
+  },
+  "project_changelog": {
+    "message": "https://github.com/Semibold/Extensions-Steward/blob/$tag$/changelog.md",
+    "placeholders": {
+      "tag": {
+        "content": "$1",
+        "example": "1.0.1"
+      }
+    }
   }
 }

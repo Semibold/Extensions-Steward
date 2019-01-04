@@ -9,21 +9,21 @@
             import { KeywordSearch } from "../src/scripts/keyword-search.js";
 
             const result = [
-                { id: 1, name: "Adblock Plus" },
-                { id: 2, name: "Image Search Options" },
-                { id: 3, name: "JSONView" },
-                { id: 4, name: "ModHeader" },
-                { id: 5, name: "OneNote Web Clipper" },
-                { id: 6, name: "Pixiv Downloader" },
-                { id: 7, name: "Proxy SwitchyOmega" },
-                { id: 8, name: "Save to Pocket" },
-                { id: 9, name: "Tampermonkey" },
-                { id: 10, name: "Wappalyzer" },
-                { id: 11, name: "WhatFont" },
-                { id: 12, name: "微博图床" },
-                { id: 13, name: "惠惠购物助手" },
-                { id: 14, name: "有道划词" },
-                { id: 15, name: "简单 QR 生成器" },
+                { id: 1, enabled: true, name: "Adblock Plus" },
+                { id: 2, enabled: true, name: "Image Search Options" },
+                { id: 3, enabled: true, name: "JSONView" },
+                { id: 4, enabled: false, name: "ModHeader" },
+                { id: 5, enabled: true, name: "OneNote Web Clipper" },
+                { id: 6, enabled: true, name: "Pixiv Downloader" },
+                { id: 7, enabled: false, name: "Proxy SwitchyOmega" },
+                { id: 8, enabled: true, name: "Save to Pocket" },
+                { id: 9, enabled: false, name: "Tampermonkey" },
+                { id: 10, enabled: true, name: "Wappalyzer" },
+                { id: 11, enabled: false, name: "WhatFont" },
+                { id: 12, enabled: true, name: "微博图床" },
+                { id: 13, enabled: false, name: "惠惠购物助手" },
+                { id: 14, enabled: true, name: "有道划词" },
+                { id: 15, enabled: true, name: "简单 QR 生成器" },
             ];
 
             class TestKeywordSearch extends KeywordSearch {
@@ -37,6 +37,7 @@
 
             const ks = new TestKeywordSearch();
 
+            console.log("[wtc@ disabled]:", ks.search("wtc@ disabled"));
             console.log("[wtc]:", ks.search("wtc"));
             console.log("[wb t]:", ks.search("wb t"));
             console.log("[微bo]:", ks.search("微bo"));
@@ -45,8 +46,11 @@
             console.log("[jdqr]:", ks.search("jdqr"));
             console.log("[jdsh engchq]:", ks.search("jdsh engchq"));
             console.log("[iso]:", ks.search("iso"));
+            console.log("[iso @qy]:", ks.search("iso @qy"));
             console.log("[jso n]:", ks.search("jso n"));
             console.log("[pid]:", ks.search("pid"));
+            console.log("[@dakai]:", ks.search("@dakai"));
+            console.log("[@jy]:", ks.search("@jy"));
         </script>
     </body>
 </html>

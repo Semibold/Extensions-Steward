@@ -59,14 +59,14 @@ export class KeywordSearch {
      */
     search(input) {
         if (!input) {
-            return Array.from(this.caches.values());
+            return this.filterByQualifier();
         }
         const segments = input
             .toLowerCase()
             .replace(/\s+/, "")
             .split(this.separatorSymbol);
         const keyword = segments.shift();
-        const qualifier = segments.length > 1 ? segments.pop() : "";
+        const qualifier = segments.pop();
         if (!keyword) {
             return this.filterByQualifier(qualifier);
         }
@@ -74,7 +74,7 @@ export class KeywordSearch {
         const chars = keyword.split("");
         for (const cache of this.caches.values()) {
             if (this.isKeywordMatchName(cache.item.id, chars)) {
-                result.push(cache.item);
+                result.push(cache);
             }
         }
         return this.filterByQualifier(qualifier, result);
@@ -82,12 +82,12 @@ export class KeywordSearch {
 
     /**
      * @private
-     * @param {string} qualifier
-     * @param {chrome.management.ExtensionInfo[]} [list]
+     * @param {string} [qualifier]
+     * @param {chrome.management.ExtensionInfo[]} [partial]
      * @return {chrome.management.ExtensionInfo[]}
      */
-    filterByQualifier(qualifier, list) {
-        const result = list || Array.from(this.caches.values());
+    filterByQualifier(qualifier, partial) {
+        const result = (partial || Array.from(this.caches.values())).map(cache => cache.item);
         switch (qualifier) {
             // 打开、启用
             case "dk":

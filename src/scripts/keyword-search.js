@@ -6,6 +6,7 @@ import { getPinyinFromHanzi } from "./hanzi-to-pinyin.js";
 export class KeywordSearch {
     constructor() {
         this.caches = new Map();
+        this.separatorSymbol = "@";
         this.generateAllCaches();
         this.registerEvents();
     }
@@ -53,24 +54,60 @@ export class KeywordSearch {
 
     /**
      * @public
-     * @param {string} keyword - User input
+     * @param {string} input - User input
      * @return {chrome.management.ExtensionInfo[]}
      */
-    search(keyword) {
-        const result = [];
-        if (!keyword) {
+    search(input) {
+        if (!input) {
             return Array.from(this.caches.values());
         }
-        const chars = keyword
+        const segments = input
             .toLowerCase()
             .replace(/\s+/, "")
-            .split("");
+            .split(this.separatorSymbol);
+        const keyword = segments.shift();
+        const qualifier = segments.length > 1 ? segments.pop() : "";
+        if (!keyword) {
+            return this.filterByQualifier(qualifier);
+        }
+        const result = [];
+        const chars = keyword.split("");
         for (const cache of this.caches.values()) {
             if (this.isKeywordMatchName(cache.item.id, chars)) {
                 result.push(cache.item);
             }
         }
-        return result;
+        return this.filterByQualifier(qualifier, result);
+    }
+
+    /**
+     * @private
+     * @param {string} qualifier
+     * @param {chrome.management.ExtensionInfo[]} [list]
+     * @return {chrome.management.ExtensionInfo[]}
+     */
+    filterByQualifier(qualifier, list) {
+        const result = list || Array.from(this.caches.values());
+        switch (qualifier) {
+            // 打开、启用
+            case "dk":
+            case "dakai":
+            case "qy":
+            case "qiyong":
+            case "enable":
+            case "enabled":
+                return result.filter(item => item.enabled);
+            // 关闭、禁用
+            case "gb":
+            case "guanbi":
+            case "jy":
+            case "jinyong":
+            case "disable":
+            case "disabled":
+                return result.filter(item => !item.enabled);
+            default:
+                return result;
+        }
     }
 
     /**

@@ -10,6 +10,7 @@ class ExtensionManager {
         this.excludeTypeSet = excludeTypeSet;
         this.enableLastSearchStatus = enableLastSearchStatus;
         this.maxIconSize = 64;
+        this.renderTimer = -1;
         this.lastSearchUserInput = "";
         this.diagramWeakMap = new WeakMap();
         this.disabledExtensionIdSet = new Set();
@@ -56,8 +57,7 @@ class ExtensionManager {
         const em = document.createElement("em");
         const h1 = document.createElement("h1");
         const ul = document.createElement("ul");
-        Array.from(SharreM.keywordSearch.caches.values())
-            .map(cache => cache.item)
+        Array.from(SharreM.keywordSearch.search(this.lastSearchUserInput))
             .sort((prev, next) => prev.name.localeCompare(next.name, "en-US"))
             .forEach(item => {
                 if (item.id === chrome.runtime.id) return;
@@ -72,7 +72,7 @@ class ExtensionManager {
     }
 
     /**
-     * @param {HTMLHeadElement} h1
+     * @param {HTMLElement} h1
      */
     renderFrameState(h1) {
         h1.tabIndex = 0;
@@ -82,7 +82,7 @@ class ExtensionManager {
     }
 
     /**
-     * @param {HTMLSpanElement} [em]
+     * @param {HTMLElement} [em]
      */
     renderLastSearchUserInput(em) {
         const node = em || this.container.querySelector("em");
@@ -90,7 +90,7 @@ class ExtensionManager {
     }
 
     /**
-     * @param {HTMLUListElement} ul
+     * @param {HTMLElement} ul
      * @param {chrome.management.ExtensionInfo} item
      */
     renderItemContent(ul, item) {
@@ -105,7 +105,7 @@ class ExtensionManager {
     }
 
     /**
-     * @param {HTMLLIElement} li
+     * @param {HTMLElement} li
      */
     renderItemState(li) {
         if (!this.diagramWeakMap.has(li)) return;
@@ -160,8 +160,16 @@ class ExtensionManager {
                         break;
                 }
                 this.renderLastSearchUserInput();
+                this.continuousFilterFrameContent();
             }
         });
+    }
+
+    continuousFilterFrameContent() {
+        clearTimeout(this.renderTimer);
+        this.renderTimer = setTimeout(() => {
+            this.renderFrameContent();
+        }, 100);
     }
 
     // registerEvents() {

@@ -20,6 +20,7 @@ ul {
     list-style-type: none;
 }
 
+em,
 h1,
 ul li {
     margin: 6px 4px;
@@ -63,4 +64,21 @@ span {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+}
+
+em {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0 8px;
+    width: 272px;
+    font-style: normal;
+    background-color: yellow;
+    box-sizing: border-box;
+    z-index: 100;
+    cursor: default;
+}
+
+em:empty {
+    display: none;
 }

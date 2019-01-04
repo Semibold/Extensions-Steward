@@ -1,5 +1,11 @@
 import { SharreM } from "./sharre/alphabet.js";
-import { K_DISABLED_EXTENSION_ID, K_LAST_SEARCH_USER_INPUT, PConfig } from "./sharre/constant.js";
+import {
+    K_DISABLED_EXTENSION_ID,
+    K_EXTENSION_TYPE_CHECKED,
+    K_KEEP_LAST_SEARCH_STATUS,
+    K_LAST_SEARCH_USER_INPUT,
+    PConfig,
+} from "./sharre/constant.js";
 
 class ExtensionManager {
     /**
@@ -11,6 +17,7 @@ class ExtensionManager {
         this.enableLastSearchStatus = enableLastSearchStatus;
         this.maxIconSize = 64;
         this.renderTimer = -1;
+        this.maxInputLength = 64;
         this.lastSearchUserInput = "";
         this.diagramWeakMap = new WeakMap();
         this.disabledExtensionIdSet = new Set();
@@ -141,6 +148,7 @@ class ExtensionManager {
         ]);
         document.addEventListener("keydown", e => {
             if (validCharSet.has(e.key)) {
+                const startLength = this.lastSearchUserInput.length;
                 switch (e.key) {
                     case "Escape":
                         if (this.lastSearchUserInput) {
@@ -155,12 +163,16 @@ class ExtensionManager {
                         }
                         break;
                     default:
-                        e.preventDefault();
-                        this.lastSearchUserInput += e.key;
+                        if (this.lastSearchUserInput.length <= this.maxInputLength) {
+                            e.preventDefault();
+                            this.lastSearchUserInput += e.key;
+                        }
                         break;
                 }
-                this.renderLastSearchUserInput();
-                this.continuousFilterFrameContent();
+                if (startLength !== this.lastSearchUserInput.length) {
+                    this.renderLastSearchUserInput();
+                    this.continuousFilterFrameContent();
+                }
             }
         });
     }
@@ -169,6 +181,7 @@ class ExtensionManager {
         clearTimeout(this.renderTimer);
         this.renderTimer = setTimeout(() => {
             this.renderFrameContent();
+            this.setLastSearchUserInput();
         }, 100);
     }
 
@@ -219,6 +232,7 @@ class ExtensionManager {
         for (const li of document.querySelectorAll("li")) {
             if (this.diagramWeakMap.has(li)) {
                 if (this.diagramWeakMap.get(li) === item.id) {
+                    // noinspection JSCheckFunctionSignatures
                     this.renderItemState(li, item);
                     break;
                 }
@@ -283,10 +297,10 @@ class ExtensionManager {
     // }
 }
 
-chrome.storage.sync.get([K_DISABLED_EXTENSION_ID, K_LAST_SEARCH_USER_INPUT], items => {
+chrome.storage.sync.get([K_EXTENSION_TYPE_CHECKED, K_KEEP_LAST_SEARCH_STATUS], items => {
     const excludeTypeSet = new Set();
-    const eTypeChecked = Object.assign(PConfig.eTypeChecked, items[K_DISABLED_EXTENSION_ID]);
-    const enableLastSearchStatus = Boolean(items[K_LAST_SEARCH_USER_INPUT]);
+    const eTypeChecked = Object.assign(PConfig.eTypeChecked, items[K_EXTENSION_TYPE_CHECKED]);
+    const enableLastSearchStatus = Boolean(items[K_KEEP_LAST_SEARCH_STATUS]);
     for (const [type, checked] of Object.entries(eTypeChecked)) {
         if (!checked) excludeTypeSet.add(type);
     }

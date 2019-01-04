@@ -38,6 +38,19 @@ export class KeywordSearch {
 
     /**
      * @private
+     * @param {chrome.management.ExtensionInfo} item
+     */
+    syncItemCache(item) {
+        if (this.caches.has(item.id)) {
+            const cache = this.caches.get(item.id);
+            this.caches.set(item.id, { item, tokens: cache.tokens, contents: cache.contents });
+        } else {
+            this.addItemCache(item);
+        }
+    }
+
+    /**
+     * @private
      * @param {string} id
      */
     removeItemCache(id) {
@@ -48,6 +61,8 @@ export class KeywordSearch {
      * @private
      */
     registerEvents() {
+        chrome.management.onEnabled.addListener(item => this.syncItemCache(item));
+        chrome.management.onDisabled.addListener(item => this.syncItemCache(item));
         chrome.management.onInstalled.addListener(item => this.addItemCache(item));
         chrome.management.onUninstalled.addListener(id => this.removeItemCache(id));
     }

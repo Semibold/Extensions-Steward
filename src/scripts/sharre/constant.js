@@ -1,10 +1,15 @@
 /**
- * @desc StorageKey
+ * @desc chrome.StorageArea
  */
-export const K_DISABLED_EXTENSION_ID = "disabled_extension_id"; // 用于存储被批量方式禁用的扩展 id
 export const K_EXTENSION_TYPE_CHECKED = "extension_type_checked"; // 用于存储扩展类型的状态
 export const K_AUTO_DISPLAY_CHANGELOG = "auto_display_changelog";
 export const K_KEEP_LAST_SEARCH_STATUS = "keep_last_search_status";
+
+/**
+ * @desc localStorage/sessionStorage
+ */
+export const K_DISABLED_EXTENSION_ID = "disabled_extension_id"; // 用于存储被批量方式禁用的扩展 id
+export const K_LAST_SEARCH_USER_INPUT = "last_search_user_input";
 
 /**
  * @static

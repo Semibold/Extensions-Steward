@@ -62,21 +62,9 @@
     "message": "https://github.com/Semibold/Extensions-Steward/issues"
   },
   "project_readme": {
-    "message": "https://github.com/Semibold/Extensions-Steward/blob/$tag$/README.md",
-    "placeholders": {
-      "tag": {
-        "content": "$1",
-        "example": "1.0.1"
-      }
-    }
+    "message": "https://github.com/Semibold/Extensions-Steward/blob/master/README.md"
   },
   "project_changelog": {
-    "message": "https://github.com/Semibold/Extensions-Steward/blob/$tag$/changelog.md",
-    "placeholders": {
-      "tag": {
-        "content": "$1",
-        "example": "1.0.1"
-      }
-    }
+    "message": "https://github.com/Semibold/Extensions-Steward/blob/master/changelog.md"
   }
 }

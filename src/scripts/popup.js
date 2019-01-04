@@ -149,9 +149,11 @@ class ExtensionManager {
         this.container.addEventListener("mouseover", e => {
             const node = e.target;
             if (!node) return;
-            const s = node.closest("h1") || node.closest("li");
-            if (s && s !== document.activeElement) {
-                s.focus();
+            if (e.movementX || e.movementY) {
+                const s = node.closest("h1") || node.closest("li");
+                if (s && s !== document.activeElement) {
+                    s.focus();
+                }
             }
         });
     }

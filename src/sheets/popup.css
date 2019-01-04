@@ -38,17 +38,8 @@ ul li {
     align-items: center;
 }
 
-h1:hover,
-ul li:hover {
-    background-color: rgb(229, 233, 239);
-}
-
 ul li[data-enabled="false"] {
     background-color: rgb(229, 233, 239);
-}
-
-ul li[data-enabled="false"]:hover {
-    background-color: #fff;
 }
 
 img {

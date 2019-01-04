@@ -30,6 +30,7 @@ class ExtensionManager {
         this.getLastSearchUserInput();
         this.getDisabledExtensionIds();
         this.renderFrameContent();
+        this.registerAutoFocusEvent();
         this.registerUserInputEvent();
         this.registerOtherEvents();
     }
@@ -142,6 +143,17 @@ class ExtensionManager {
         img.src = `${iconInfo.url}${item.enabled ? "" : "?grayscale=true"}`;
         li.title = chrome.i18n.getMessage(item.enabled ? "disable_extension" : "enable_extension");
         li.dataset.enabled = item.enabled.toString();
+    }
+
+    registerAutoFocusEvent() {
+        this.container.addEventListener("mouseover", e => {
+            const node = e.target;
+            if (!node) return;
+            const s = node.closest("h1") || node.closest("li");
+            if (s && s !== document.activeElement) {
+                s.focus();
+            }
+        });
     }
 
     registerUserInputEvent() {

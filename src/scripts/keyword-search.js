@@ -94,6 +94,7 @@ export class KeywordSearch {
             case "dakai":
             case "qy":
             case "qiyong":
+            case "on":
             case "enable":
             case "enabled":
                 return result.filter(item => item.enabled);
@@ -102,6 +103,7 @@ export class KeywordSearch {
             case "guanbi":
             case "jy":
             case "jinyong":
+            case "off":
             case "disable":
             case "disabled":
                 return result.filter(item => !item.enabled);

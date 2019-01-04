@@ -90,7 +90,7 @@ class ExtensionManager {
      * @param {HTMLElement} h1
      */
     renderFrameState(h1) {
-        h1.tabIndex = 0;
+        h1.tabIndex = this.lastSearchUserInput.length ? -1 : 0;
         h1.textContent = chrome.i18n.getMessage(
             this.disabledExtensionIdSet.size ? "one_key_restore" : "one_key_disable",
         );
@@ -101,7 +101,7 @@ class ExtensionManager {
      */
     renderLastSearchUserInput(em) {
         const node = em || this.container.querySelector("em");
-        node.textContent = this.lastSearchUserInput;
+        if (em) node.textContent = this.lastSearchUserInput;
     }
 
     /**

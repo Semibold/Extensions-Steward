@@ -55,6 +55,9 @@
     "message": "Theme",
     "description": "No translation required"
   },
+  "menu_feedback": {
+    "message": "Feedback"
+  },
   "author_email": {
     "message": "abc@hub.moe"
   },

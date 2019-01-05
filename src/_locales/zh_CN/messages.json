@@ -34,5 +34,8 @@
   },
   "options_extension_type": {
     "message": "管理已勾选类型的扩展"
+  },
+  "menu_feedback": {
+    "message": "问题反馈"
   }
 }

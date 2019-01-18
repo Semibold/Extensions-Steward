@@ -1,0 +1,91 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "required": [
+    "auto_display_changelog",
+    "keep_last_search_status",
+    "extension_type_checked"
+  ],
+  "properties": {
+    "auto_display_changelog": {
+      "$id": "#/properties/auto_display_changelog",
+      "type": "boolean",
+      "title": "The Auto_display_changelog Schema",
+      "default": true,
+      "examples": [
+        false
+      ]
+    },
+    "keep_last_search_status": {
+      "$id": "#/properties/keep_last_search_status",
+      "type": "boolean",
+      "title": "The Keep_last_search_status Schema",
+      "default": false,
+      "examples": [
+        true
+      ]
+    },
+    "extension_type_checked": {
+      "$id": "#/properties/extension_type_checked",
+      "type": "object",
+      "title": "The Extension_type_checked Schema",
+      "required": [
+        "extension",
+        "hosted_app",
+        "packaged_app",
+        "legacy_packaged_app",
+        "theme"
+      ],
+      "properties": {
+        "extension": {
+          "$id": "#/properties/extension_type_checked/properties/extension",
+          "type": "boolean",
+          "title": "The Extension Schema",
+          "default": true,
+          "examples": [
+            true
+          ]
+        },
+        "hosted_app": {
+          "$id": "#/properties/extension_type_checked/properties/hosted_app",
+          "type": "boolean",
+          "title": "The Hosted_app Schema",
+          "default": false,
+          "examples": [
+            false
+          ]
+        },
+        "packaged_app": {
+          "$id": "#/properties/extension_type_checked/properties/packaged_app",
+          "type": "boolean",
+          "title": "The Packaged_app Schema",
+          "default": false,
+          "examples": [
+            false
+          ]
+        },
+        "legacy_packaged_app": {
+          "$id": "#/properties/extension_type_checked/properties/legacy_packaged_app",
+          "type": "boolean",
+          "title": "The Legacy_packaged_app Schema",
+          "default": false,
+          "examples": [
+            false
+          ]
+        },
+        "theme": {
+          "$id": "#/properties/extension_type_checked/properties/theme",
+          "type": "boolean",
+          "title": "The Theme Schema",
+          "default": false,
+          "examples": [
+            false
+          ]
+        }
+      }
+    }
+  }
+}

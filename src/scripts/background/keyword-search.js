@@ -77,8 +77,8 @@ export class KeywordSearch {
             return this.filterByQualifier();
         }
         const segments = input
+            .trim()
             .toLowerCase()
-            .replace(/\s+/, "")
             .split(this.separatorSymbol);
         const keyword = segments.shift();
         const qualifier = segments.pop();
@@ -86,7 +86,7 @@ export class KeywordSearch {
             return this.filterByQualifier(qualifier);
         }
         const result = [];
-        const chars = keyword.split("");
+        const chars = Array.from(keyword);
         for (const cache of this.caches.values()) {
             if (this.isKeywordMatchName(cache.item.id, chars)) {
                 result.push(cache);

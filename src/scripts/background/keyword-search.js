@@ -27,7 +27,7 @@ export class KeywordSearch {
      * @param {chrome.management.ExtensionInfo} item
      */
     addItemCache(item) {
-        const tokens = getPinyinFromHanzi(item.name);
+        const tokens = getPinyinFromHanzi(item.shortName || item.name);
         const contents = { target: "", source: "" };
         for (const token of tokens) {
             contents.target += token.target.toLowerCase();

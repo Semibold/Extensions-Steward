@@ -8,7 +8,7 @@
 
 ## Screenshots and Examples
 
-![management](screenshot/management.png)
+![management](screenshot/management.jpg)
 
 上图是处于打开状态的扩展管家。按下 <kbd>Shift+Alt+Z</kbd> 可以快速打开扩展列表，如果此快捷键被其他程序占用，可以前往 `chrome://extensions/shortcuts` 自定义快捷键。
 

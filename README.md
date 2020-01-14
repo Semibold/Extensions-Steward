@@ -36,3 +36,7 @@
     -   以下时有效的关键字，选取自己熟悉一种的即可
     -   启用：`on`, `enable`, `enabled`, `dk`, `dakai`, `qy`, `qiyong`
     -   禁用：`off`, `disable`, `disabled`, `gb`, `guanbi`, `jy`, `jinyong`
+
+## Privacy Policy
+
+[隐私权和条款](docs/privacy-policy.md)

@@ -329,7 +329,7 @@ class StringBuilder {
     }
 
     /**
-     * @return {number}
+     * @return {int}
      */
     get length() {
         return this.input.length;
@@ -542,7 +542,7 @@ export function getPinyinFromHanzi(input) {
     let tokenType = Token.LATIN;
     // Go through the input, create a new token when
     // a. Token type changed
-    // b. Get the Pinyin of current charater.
+    // b. Get the Pinyin of current character.
     // c. current character is space.
     for (let i = 0; i < inputLength; i++) {
         const character = input.charAt(i);

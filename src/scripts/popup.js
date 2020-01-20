@@ -292,7 +292,11 @@ class ExtensionManager {
 chrome.storage.sync.get([K_EXTENSION_TYPE_CHECKED, K_KEEP_LAST_SEARCH_STATUS], items => {
     const excludeTypeSet = new Set();
     const eTypeChecked = Object.assign(PConfig.eTypeChecked, items[K_EXTENSION_TYPE_CHECKED]);
-    const enableLastSearchStatus = Boolean(items[K_KEEP_LAST_SEARCH_STATUS]);
+    const enableLastSearchStatus = Boolean(
+        items[K_KEEP_LAST_SEARCH_STATUS] == null
+            ? PConfig.defaultOptions.keepLastSearchStatus
+            : items[K_KEEP_LAST_SEARCH_STATUS],
+    );
     for (const [type, checked] of Object.entries(eTypeChecked)) {
         if (!checked) excludeTypeSet.add(type);
     }

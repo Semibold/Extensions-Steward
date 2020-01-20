@@ -16,7 +16,7 @@ function setOptionsItem(node, items, key) {
     node.checked = Boolean(items[key]);
     node.addEventListener("click", e => {
         const checked = e.target.checked;
-        chrome.storage.sync.set({ [key]: checked }, function() {
+        chrome.storage.sync.set({ [key]: checked }, () => {
             if (chrome.runtime.lastError) {
                 node.checked = !checked;
             }

@@ -33,7 +33,7 @@
 -   为什么快捷搜索时不能输入一些特殊字符？
     -   快捷搜索时只能设别指定字符，包括：英文字母(A-Z)、阿拉伯数字(0-9)、限定符(@)、<kbd>Esc</kbd>、<kbd>Backspace</kbd>
 -   限定符后面有效的关键字有哪些？
-    -   以下时有效的关键字，选取自己熟悉一种的即可
+    -   以下是有效的关键字，选取自己熟悉一种的即可
     -   启用：`on`, `enable`, `enabled`, `dk`, `dakai`, `qy`, `qiyong`
     -   禁用：`off`, `disable`, `disabled`, `gb`, `guanbi`, `jy`, `jinyong`
 

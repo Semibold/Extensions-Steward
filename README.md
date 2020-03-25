@@ -8,19 +8,19 @@
 
 ## Screenshots and Examples
 
-![management](screenshot/management.jpg)
+<img src="screenshot/management.jpg" alt="" width="512">
 
 上图是处于打开状态的扩展管家。按下 <kbd>Shift+Alt+Z</kbd> 可以快速打开扩展列表，如果此快捷键被其他程序占用，可以前往 `chrome://extensions/shortcuts` 自定义快捷键。
 
-![options](screenshot/options.png)
+<img src="screenshot/options.png" alt="" width="512">
 
 上图是选项栏。取消勾选通知我更新详情，可以关闭更新时自动打开更新日志的功能。勾选保持上一次搜索的状态，可以在打开扩展列表时保持上一次的搜索状态。
 
-![omnibox-search](screenshot/omnibox-search.gif)
+<img src="screenshot/omnibox-search.gif" alt="" width="512">
 
 上图是使用 Omnibox（地址栏）方便的搜索 Chrome 商店中的扩展。在地址栏中输入 `ems`，按下 <kbd>Space</kbd> 或 <kbd>Tab</kbd> 键，输入你要搜索的扩展名称，按下 <kbd>Enter</kbd> 键即可快速到达 Chrome 商店的搜索列表中。
 
-![keyword-search](screenshot/keyword-search.gif)
+<img src="screenshot/keyword-search.gif" alt="" width="336">
 
 上图展示了快捷搜索扩展的功能。输入英文字母/汉字拼音可以快速查找相关的扩展，同时可以使用 `@` 限定符来查找启用/禁用的扩展。按下 <kbd>Tab</kbd> 或 <kbd>Shift+Tab</kbd> 可以切换焦点，按下 <kbd>Enter</kbd> 键可以启用/禁用已获取焦点的扩展。
 

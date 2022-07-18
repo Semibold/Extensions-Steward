@@ -35,7 +35,6 @@
   "permissions": [
     "contextMenus",
     "management",
-    "storage",
-    "tabs"
+    "storage"
   ]
 }

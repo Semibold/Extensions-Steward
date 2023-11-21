@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "__MSG_ext_name__",
   "version": "1.0.0",
   "default_locale": "en",
@@ -9,15 +9,15 @@
     "64": "icons/64.png",
     "128": "icons/128.png"
   },
-  "browser_action": {
+  "action": {
     "default_popup": "popup.html"
   },
   "background": {
-    "page": "background.html",
-    "persistent": true
+    "service_worker": "scripts/background.js",
+    "type": "module"
   },
   "commands": {
-    "_execute_browser_action": {
+    "_execute_action": {
       "suggested_key": {
         "default": "Shift+Alt+Z"
       }
@@ -27,10 +27,10 @@
   "omnibox": {
     "keyword": "ems"
   },
-  "minimum_chrome_version": "66",
+  "minimum_chrome_version": "100",
   "options_ui": {
     "page": "options.html",
-    "chrome_style": true
+    "open_in_tab": true
   },
   "permissions": [
     "contextMenus",

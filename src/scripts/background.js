@@ -37,3 +37,13 @@ chrome.omnibox.onInputEntered.addListener((text, disposition) => {
 self.coreAPIs = {
     keywordSearch: new KeywordSearch(),
 };
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (!message) return;
+
+    switch (message.type) {
+        case "keywordSearch":
+            sendResponse(self.coreAPIs.keywordSearch.search(message.input));
+            break;
+    }
+});

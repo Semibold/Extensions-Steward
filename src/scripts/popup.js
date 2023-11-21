@@ -1,4 +1,3 @@
-import { SharreM } from "./sharre/alphabet.js";
 import {
     K_DISABLED_EXTENSION_ID,
     K_EXTENSION_TYPE_CHECKED,
@@ -26,10 +25,10 @@ class ExtensionManager {
         this.init();
     }
 
-    init() {
+    async init() {
         this.getLastSearchUserInput();
         this.getDisabledExtensionIds();
-        this.renderFrameContent();
+        await this.renderFrameContent();
         this.registerAutoFocusEvent();
         this.registerUserInputEvent();
         this.registerOtherEvents();
@@ -51,7 +50,7 @@ class ExtensionManager {
     getDisabledExtensionIds() {
         const data = localStorage.getItem(K_DISABLED_EXTENSION_ID);
         const list = data ? data.split(",") : [];
-        list.forEach(id => this.disabledExtensionIdSet.add(id));
+        list.forEach((id) => this.disabledExtensionIdSet.add(id));
     }
 
     setDisabledExtensionIds() {
@@ -66,19 +65,38 @@ class ExtensionManager {
      * @param {string} [input]
      * @return {chrome.management.ExtensionInfo[]}
      */
-    getTargetExtensionInfos(input = "") {
-        return Array.from(SharreM.keywordSearch.search(input)).filter(
-            item => !(item.id === chrome.runtime.id || this.excludeTypeSet.has(item.type)),
+    async getTargetExtensionInfos(input = "") {
+        return Array.from(await this.fetchKeywordSearch(input)).filter(
+            (item) => !(item.id === chrome.runtime.id || this.excludeTypeSet.has(item.type)),
         );
     }
 
-    renderFrameContent() {
+    async fetchKeywordSearch(input) {
+        return new Promise((resolve, reject) => {
+            chrome.runtime.sendMessage(
+                {
+                    type: "keywordSearch",
+                    input: input,
+                },
+                (result) => {
+                    if (chrome.runtime.lastError) {
+                        reject(chrome.runtime.lastError);
+                    } else {
+                        resolve(result);
+                    }
+                },
+            );
+        });
+    }
+
+    async renderFrameContent() {
         const em = document.createElement("em");
         const h1 = document.createElement("h1");
         const ul = document.createElement("ul");
-        this.getTargetExtensionInfos(this.lastSearchUserInput)
-            .sort((prev, next) => prev.name.localeCompare(next.name, "en-US"))
-            .forEach(item => this.renderItemContent(ul, item));
+        const list = await this.getTargetExtensionInfos(this.lastSearchUserInput);
+        list.sort((prev, next) => prev.name.localeCompare(next.name, "en-US")).forEach((item) =>
+            this.renderItemContent(ul, item),
+        );
         this.renderLastSearchUserInput(em);
         this.renderFrameState(h1);
         this.fragemnt.append(em, h1, ul);
@@ -146,7 +164,7 @@ class ExtensionManager {
     }
 
     registerAutoFocusEvent() {
-        this.container.addEventListener("mouseover", e => {
+        this.container.addEventListener("mouseover", (e) => {
             const node = e.target;
             if (!node) return;
             const s = node.closest("h1") || node.closest("li");
@@ -164,7 +182,7 @@ class ExtensionManager {
             'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
         ]);
-        document.addEventListener("keydown", e => {
+        document.addEventListener("keydown", (e) => {
             if (validCharSet.has(e.key)) {
                 const startLength = this.lastSearchUserInput.length;
                 switch (e.key) {
@@ -204,7 +222,7 @@ class ExtensionManager {
     }
 
     registerOtherEvents() {
-        this.container.addEventListener("click", e => {
+        this.container.addEventListener("click", (e) => {
             const node = e.target;
             if (!node) return;
             if (node.closest("h1")) {
@@ -212,13 +230,13 @@ class ExtensionManager {
             } else {
                 const li = node.closest("li");
                 if (this.diagramWeakMap.has(li)) {
-                    chrome.management.get(this.diagramWeakMap.get(li), item =>
+                    chrome.management.get(this.diagramWeakMap.get(li), (item) =>
                         chrome.management.setEnabled(item.id, !item.enabled),
                     );
                 }
             }
         });
-        document.addEventListener("keyup", e => {
+        document.addEventListener("keyup", (e) => {
             const node = e.target;
             if (!node) return;
             if (e.key === "Enter") {
@@ -229,10 +247,10 @@ class ExtensionManager {
                 }
             }
         });
-        chrome.management.onEnabled.addListener(item => this.toggleItemState(item));
-        chrome.management.onDisabled.addListener(item => this.toggleItemState(item));
-        chrome.management.onInstalled.addListener(item => this.continuousFilterFrameContent());
-        chrome.management.onUninstalled.addListener(id => this.continuousFilterFrameContent());
+        chrome.management.onEnabled.addListener((item) => this.toggleItemState(item));
+        chrome.management.onDisabled.addListener((item) => this.toggleItemState(item));
+        chrome.management.onInstalled.addListener((item) => this.continuousFilterFrameContent());
+        chrome.management.onUninstalled.addListener((id) => this.continuousFilterFrameContent());
     }
 
     toggleItemState(item) {
@@ -247,9 +265,9 @@ class ExtensionManager {
         }
     }
 
-    oneKeyDisable() {
-        const list = this.getTargetExtensionInfos();
-        const filtered = list.filter(item => item.enabled);
+    async oneKeyDisable() {
+        const list = await this.getTargetExtensionInfos();
+        const filtered = list.filter((item) => item.enabled);
         const tailId = Boolean(filtered.length) && filtered[filtered.length - 1].id;
         while (filtered.length) {
             const item = filtered.shift();
@@ -266,11 +284,11 @@ class ExtensionManager {
         }
     }
 
-    oneKeyRestore() {
-        const list = this.getTargetExtensionInfos();
+    async oneKeyRestore() {
+        const list = await this.getTargetExtensionInfos();
         const disabledRecently = Array.from(this.disabledExtensionIdSet);
         const disabledExisting = new Set(
-            list.map(item => {
+            list.map((item) => {
                 if (!item.enabled) {
                     return item.id;
                 }
@@ -289,7 +307,7 @@ class ExtensionManager {
     }
 }
 
-chrome.storage.sync.get([K_EXTENSION_TYPE_CHECKED, K_KEEP_LAST_SEARCH_STATUS], items => {
+chrome.storage.sync.get([K_EXTENSION_TYPE_CHECKED, K_KEEP_LAST_SEARCH_STATUS], (items) => {
     const excludeTypeSet = new Set();
     const eTypeChecked = Object.assign(PConfig.eTypeChecked, items[K_EXTENSION_TYPE_CHECKED]);
     const enableLastSearchStatus = Boolean(

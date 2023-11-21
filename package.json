@@ -3,7 +3,11 @@
   "version": "3.3.5",
   "private": true,
   "description": "Chrome Extension",
+  "packageManager": "pnpm@8.10.5",
   "scripts": {
+    "prepare": "node ./.husky/setup.js",
+    "husky:pre-commit": "lint-staged",
+    "husky:commit-msg": "commitlint --edit ${1}",
     "bundle": "rimraf dist && gulp bundle"
   },
   "repository": {
@@ -16,34 +20,31 @@
     "url": "https://github.com/Semibold/Extensions-Steward/issues"
   },
   "homepage": "https://github.com/Semibold/Extensions-Steward#readme",
-  "engines": {
-    "node": ">=10.10.0"
-  },
   "prettier": {
     "singleQuote": false,
     "trailingComma": "all"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx,md}": "prettier --write"
   },
   "devDependencies": {
-    "@commitlint/cli": "8.3.5",
-    "@commitlint/config-conventional": "8.3.4",
+    "@commitlint/cli": "^18.4.3",
+    "@commitlint/config-conventional": "^18.4.3",
     "@types/chrome": "latest",
-    "@types/gulp": "4.0.6",
-    "@types/merge-stream": "1.1.2",
-    "@types/node": "13.1.8",
-    "chrome-webstore-upload-cli": "1.2.0",
-    "gulp": "4.0.2",
-    "gulp-json-modify": "1.0.2",
-    "gulp-zip": "5.0.1",
-    "husky": "4.0.10",
-    "merge-stream": "2.0.0",
-    "prettier": "1.19.1",
-    "pretty-quick": "2.0.1",
-    "rimraf": "3.0.0"
+    "@types/gulp": "^4.0.6",
+    "@types/merge-stream": "^1.1.2",
+    "@types/node": "^20.9.3",
+    "chrome-webstore-upload-cli": "^2.2.2",
+    "ci-info": "^4.0.0",
+    "gulp": "^4.0.2",
+    "gulp-json-modify": "^1.0.2",
+    "gulp-zip": "^5.0.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.1.0",
+    "merge-stream": "^2.0.0",
+    "npm-check-updates": "^16.14.11",
+    "prettier": "^3.1.0",
+    "pretty-quick": "^3.1.3",
+    "rimraf": "^5.0.5"
   }
 }

@@ -8,8 +8,9 @@
     "prepare": "node ./.husky/setup.js",
     "husky:pre-commit": "lint-staged",
     "husky:commit-msg": "commitlint --edit ${1}",
-    "bundle": "rimraf dist && gulp bundle",
-    "watch": "tsc --watch"
+    "bundle": "rimraf dist && pnpm run build && gulp bundle",
+    "watch": "tsc --watch",
+    "build": "tsc --sourceMap false"
   },
   "repository": {
     "type": "git",

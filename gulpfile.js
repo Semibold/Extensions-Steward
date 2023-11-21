@@ -4,8 +4,8 @@ const gulp_json_modify = require("gulp-json-modify");
 const merge_stream = require("merge-stream");
 const pkg = require("./package.json");
 
-gulp.task("bundle", function() {
-    const others = gulp.src(["src/**", "!src/manifest.json"]);
+gulp.task("bundle", function () {
+    const others = gulp.src(["src/**", "!src/manifest.json", "!src/**/*.ts", "!src/**/*.js.map"]);
     const manifest = gulp.src("src/manifest.json").pipe(
         gulp_json_modify({
             key: "version",
@@ -13,7 +13,5 @@ gulp.task("bundle", function() {
         }),
     );
 
-    return merge_stream(manifest, others)
-        .pipe(gulp_zip("bundle.zip"))
-        .pipe(gulp.dest("dist"));
+    return merge_stream(manifest, others).pipe(gulp_zip("bundle.zip")).pipe(gulp.dest("dist"));
 });

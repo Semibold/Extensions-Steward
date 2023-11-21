@@ -15,7 +15,7 @@ class ExtensionManager {
     lastSearchUserInput: string;
     diagramWeakMap: WeakMap<HTMLElement, string>;
     disabledExtensionIdSet: Set<string>;
-    fragemnt: DocumentFragment;
+    fragment: DocumentFragment;
     container: HTMLElement;
 
     /**
@@ -31,7 +31,7 @@ class ExtensionManager {
         this.lastSearchUserInput = "";
         this.diagramWeakMap = new WeakMap();
         this.disabledExtensionIdSet = new Set();
-        this.fragemnt = document.createDocumentFragment();
+        this.fragment = document.createDocumentFragment();
         this.container = document.getElementById("app") as HTMLElement;
         this.init();
     }
@@ -110,9 +110,9 @@ class ExtensionManager {
         );
         this.renderLastSearchUserInput(em);
         this.renderFrameState(h1);
-        this.fragemnt.append(em, h1, ul);
+        this.fragment.append(em, h1, ul);
         this.resetContainerContents();
-        this.container.append(this.fragemnt);
+        this.container.append(this.fragment);
     }
 
     /**

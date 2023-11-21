@@ -6,3 +6,6 @@ node_modules
 dist
 
 npm-debug.log*
+
+src/**/*.js
+src/**/*.js.map

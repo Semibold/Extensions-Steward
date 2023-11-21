@@ -11,6 +11,12 @@
  * @see https://android.googlesource.com/platform/packages/providers/ContactsProvider/+/0c49720fb3d58e346739c2ccd56ed2b739249e07/src/com/android/providers/contacts/HanziToPinyin.java
  */
 
+export interface IToken {
+    type: number;
+    target: string;
+    source: string;
+}
+
 const TAG = "[HanziToPinyin]";
 const LOCALE_CHINA = "zh-Hans-CN";
 
@@ -321,43 +327,30 @@ const LAST_PINYIN_UNIHAN = "\u9FFF";
 const COLLATOR = new Intl.Collator(LOCALE_CHINA);
 
 class StringBuilder {
-    /**
-     * @param {string} [input]
-     */
+    input = "";
+
     constructor(input = "") {
         this.input = input;
     }
 
-    /**
-     * @return {int}
-     */
     get length() {
         return this.input.length;
     }
 
-    /**
-     * @param {string} substr
-     */
-    append(substr) {
+    append(substr: string) {
         this.input += substr;
     }
 
-    /**
-     * @param {int} len
-     */
-    setLength(len) {
+    setLength(len: number) {
         this.input = this.input.slice(0, len);
     }
 
-    /**
-     * @return {string}
-     */
     toString() {
         return this.input;
     }
 }
 
-class Token {
+class Token implements IToken {
     /**
      * Separator between target string for each source char
      */
@@ -375,13 +368,17 @@ class Token {
         return 3;
     }
 
+    type: number;
+    source: string;
+    target: string;
+
     /**
      * @param {int} [type] - Type of this token, ASCII, PINYIN or UNKNOWN.
      * @param {string} [source] - Original string before translation.
      * @param {string} [target] - Translated string of source. For Han, target is corresponding Pinyin.
      *                            Otherwise target is original string in source.
      */
-    constructor(type, source, target) {
+    constructor(type: number = 1, source: string = "", target: string = "") {
         this.type = type;
         this.source = source;
         this.target = target;
@@ -394,7 +391,7 @@ class Token {
 function hasChinaCollator() {
     // Check if zh_CN collation data is available
     const locale = Intl.Collator.supportedLocalesOf([LOCALE_CHINA]);
-    const hasChinaCollator = locale.some(lang => lang === LOCALE_CHINA);
+    const hasChinaCollator = locale.some((lang) => lang === LOCALE_CHINA);
     if (hasChinaCollator) {
         // Do self validation just once.
         if (DEBUG) {
@@ -436,11 +433,7 @@ function doSelfValidation() {
     return true;
 }
 
-/**
- * @param {string} character
- * @return {Token}
- */
-function getToken(character) {
+function getToken(character: string) {
     const token = new Token();
     const letter = character.toString();
 
@@ -449,7 +442,7 @@ function getToken(character) {
     let offset = -1;
     let cmp;
 
-    if (character.codePointAt(0) < 256) {
+    if (<number>character.codePointAt(0) < 256) {
         token.type = Token.LATIN;
         token.target = letter;
         return token;
@@ -512,7 +505,7 @@ function getToken(character) {
  * @param {Token[]} tokens
  * @param {int} tokenType
  */
-function addToken(sb, tokens, tokenType) {
+function addToken(sb: StringBuilder, tokens: Token[], tokenType: number) {
     const str = sb.toString();
     tokens.push(new Token(tokenType, str, str));
     sb.setLength(0);
@@ -528,11 +521,11 @@ function addToken(sb, tokens, tokenType) {
  * @param {string} input
  * @return {Token[]}
  */
-export function getPinyinFromHanzi(input) {
+export function getPinyinFromHanzi(input: string) {
     if (typeof input !== "string") {
         throw new Error("`input` must be string.");
     }
-    const tokens = [];
+    const tokens: Token[] = [];
     const inputLength = input.length;
     if (!hasChinaCollator() || !input) {
         // return empty tokens.
@@ -550,7 +543,7 @@ export function getPinyinFromHanzi(input) {
             if (sb.length > 0) {
                 addToken(sb, tokens, tokenType);
             }
-        } else if (character.codePointAt(0) < 256) {
+        } else if (<number>character.codePointAt(0) < 256) {
             if (tokenType !== Token.LATIN && sb.length > 0) {
                 addToken(sb, tokens, tokenType);
             }

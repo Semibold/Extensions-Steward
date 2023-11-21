@@ -6,6 +6,12 @@ import "./background/start-changelog.js";
 
 import { KeywordSearch } from "./background/keyword-search.js";
 
+declare global {
+    interface Window {
+        keywordSearch: KeywordSearch;
+    }
+}
+
 /**
  * @desc Omnibox default suggestion
  */
@@ -31,19 +37,14 @@ chrome.omnibox.onInputEntered.addListener((text, disposition) => {
     }
 });
 
-/**
- * @desc Core Share Module (APIs)
- */
-self.coreAPIs = {
-    keywordSearch: new KeywordSearch(),
-};
+self.keywordSearch = new KeywordSearch();
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (!message) return;
 
     switch (message.type) {
         case "keywordSearch":
-            sendResponse(self.coreAPIs.keywordSearch.search(message.input));
+            sendResponse(self.keywordSearch.search(message.input));
             break;
     }
 });

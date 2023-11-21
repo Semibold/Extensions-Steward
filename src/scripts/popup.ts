@@ -7,11 +7,22 @@ import {
 } from "./sharre/constant.js";
 
 class ExtensionManager {
+    excludeTypeSet: Set<string>;
+    enableLastSearchStatus: boolean;
+    maxIconSize: number;
+    renderTimer: number;
+    maxInputLength: number;
+    lastSearchUserInput: string;
+    diagramWeakMap: WeakMap<HTMLElement, string>;
+    disabledExtensionIdSet: Set<string>;
+    fragemnt: DocumentFragment;
+    container: HTMLElement;
+
     /**
      * @param {Set<string>} excludeTypeSet
      * @param {boolean} enableLastSearchStatus
      */
-    constructor(excludeTypeSet, enableLastSearchStatus) {
+    constructor(excludeTypeSet: Set<string>, enableLastSearchStatus: boolean) {
         this.excludeTypeSet = excludeTypeSet;
         this.enableLastSearchStatus = enableLastSearchStatus;
         this.maxIconSize = 64;
@@ -21,7 +32,7 @@ class ExtensionManager {
         this.diagramWeakMap = new WeakMap();
         this.disabledExtensionIdSet = new Set();
         this.fragemnt = document.createDocumentFragment();
-        this.container = document.getElementById("app");
+        this.container = document.getElementById("app") as HTMLElement;
         this.init();
     }
 
@@ -65,13 +76,13 @@ class ExtensionManager {
      * @param {string} [input]
      * @return {chrome.management.ExtensionInfo[]}
      */
-    async getTargetExtensionInfos(input = "") {
+    async getTargetExtensionInfos(input = ""): Promise<chrome.management.ExtensionInfo[]> {
         return Array.from(await this.fetchKeywordSearch(input)).filter(
             (item) => !(item.id === chrome.runtime.id || this.excludeTypeSet.has(item.type)),
         );
     }
 
-    async fetchKeywordSearch(input) {
+    async fetchKeywordSearch(input: string): Promise<chrome.management.ExtensionInfo[]> {
         return new Promise((resolve, reject) => {
             chrome.runtime.sendMessage(
                 {
@@ -107,7 +118,7 @@ class ExtensionManager {
     /**
      * @param {HTMLElement} h1
      */
-    renderFrameState(h1) {
+    renderFrameState(h1: HTMLHeadElement) {
         h1.tabIndex = this.lastSearchUserInput.length ? -1 : 0;
         h1.textContent = chrome.i18n.getMessage(
             this.disabledExtensionIdSet.size ? "one_key_restore" : "one_key_disable",
@@ -117,8 +128,8 @@ class ExtensionManager {
     /**
      * @param {HTMLElement} [em]
      */
-    renderLastSearchUserInput(em) {
-        const node = em || this.container.querySelector("em");
+    renderLastSearchUserInput(em?: HTMLElement) {
+        const node = em || (this.container.querySelector("em") as HTMLElement);
         if (em) node.textContent = this.lastSearchUserInput;
     }
 
@@ -126,7 +137,7 @@ class ExtensionManager {
      * @param {HTMLElement} ul
      * @param {chrome.management.ExtensionInfo} item
      */
-    renderItemContent(ul, item) {
+    renderItemContent(ul: HTMLUListElement, item: chrome.management.ExtensionInfo) {
         const li = document.createElement("li");
         const img = document.createElement("img");
         const span = document.createElement("span");
@@ -141,9 +152,9 @@ class ExtensionManager {
      * @param {HTMLElement} li
      * @param {chrome.management.ExtensionInfo} item
      */
-    renderItemState(li, item) {
-        const img = li.querySelector("img");
-        const span = li.querySelector("span");
+    renderItemState(li: HTMLElement, item: chrome.management.ExtensionInfo) {
+        const img = li.querySelector("img") as HTMLImageElement;
+        const span = li.querySelector("span") as HTMLSpanElement;
         const iconInfo = { size: 32, url: `chrome://extension-icon/${item.id}/32/0` };
         if (item.icons && item.icons.length) {
             const firstIcon = item.icons[0];
@@ -165,7 +176,7 @@ class ExtensionManager {
 
     registerAutoFocusEvent() {
         this.container.addEventListener("mouseover", (e) => {
-            const node = e.target;
+            const node = e.target as HTMLElement;
             if (!node) return;
             const s = node.closest("h1") || node.closest("li");
             if (s && s !== document.activeElement) {
@@ -215,7 +226,7 @@ class ExtensionManager {
 
     continuousFilterFrameContent() {
         clearTimeout(this.renderTimer);
-        this.renderTimer = setTimeout(() => {
+        this.renderTimer = window.setTimeout(() => {
             this.renderFrameContent();
             this.setLastSearchUserInput();
         }, 100);
@@ -223,21 +234,21 @@ class ExtensionManager {
 
     registerOtherEvents() {
         this.container.addEventListener("click", (e) => {
-            const node = e.target;
+            const node = e.target as HTMLElement;
             if (!node) return;
             if (node.closest("h1")) {
                 this.disabledExtensionIdSet.size ? this.oneKeyRestore() : this.oneKeyDisable();
             } else {
-                const li = node.closest("li");
+                const li = node.closest("li") as HTMLElement;
                 if (this.diagramWeakMap.has(li)) {
-                    chrome.management.get(this.diagramWeakMap.get(li), (item) =>
+                    chrome.management.get(this.diagramWeakMap.get(li) as string, (item) =>
                         chrome.management.setEnabled(item.id, !item.enabled),
                     );
                 }
             }
         });
         document.addEventListener("keyup", (e) => {
-            const node = e.target;
+            const node = e.target as HTMLElement;
             if (!node) return;
             if (e.key === "Enter") {
                 const s = node.closest("h1") || node.closest("li");
@@ -253,7 +264,7 @@ class ExtensionManager {
         chrome.management.onUninstalled.addListener((id) => this.continuousFilterFrameContent());
     }
 
-    toggleItemState(item) {
+    toggleItemState(item: chrome.management.ExtensionInfo) {
         for (const li of document.querySelectorAll("li")) {
             if (this.diagramWeakMap.has(li)) {
                 if (this.diagramWeakMap.get(li) === item.id) {
@@ -270,7 +281,7 @@ class ExtensionManager {
         const filtered = list.filter((item) => item.enabled);
         const tailId = Boolean(filtered.length) && filtered[filtered.length - 1].id;
         while (filtered.length) {
-            const item = filtered.shift();
+            const item = filtered.shift() as chrome.management.ExtensionInfo;
             chrome.management.setEnabled(item.id, false, () => {
                 this.disabledExtensionIdSet.add(item.id);
                 if (item.id === tailId) {
@@ -296,7 +307,7 @@ class ExtensionManager {
         );
         const h1 = this.container.querySelector("h1");
         while (disabledRecently.length) {
-            const id = disabledRecently.shift();
+            const id = disabledRecently.shift() as string;
             disabledExisting.has(id) && chrome.management.setEnabled(id, true);
         }
         this.disabledExtensionIdSet.clear();
@@ -308,7 +319,7 @@ class ExtensionManager {
 }
 
 chrome.storage.sync.get([K_EXTENSION_TYPE_CHECKED, K_KEEP_LAST_SEARCH_STATUS], (items) => {
-    const excludeTypeSet = new Set();
+    const excludeTypeSet: Set<string> = new Set();
     const eTypeChecked = Object.assign(PConfig.eTypeChecked, items[K_EXTENSION_TYPE_CHECKED]);
     const enableLastSearchStatus = Boolean(
         items[K_KEEP_LAST_SEARCH_STATUS] == null

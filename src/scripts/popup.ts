@@ -176,7 +176,7 @@ class ExtensionManager {
         }
         span.textContent = img.alt = item.shortName || item.name;
         img.src = `${iconInfo.url}${item.enabled ? "" : "?grayscale=true"}`;
-        li.title = chrome.i18n.getMessage(item.enabled ? "disable_extension" : "enable_extension");
+        li.title = `${item.name}\n${chrome.i18n.getMessage(item.enabled ? "disable_extension" : "enable_extension")}`;
         li.dataset.enabled = item.enabled.toString();
     }
 

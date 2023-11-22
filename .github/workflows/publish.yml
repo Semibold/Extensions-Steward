@@ -3,6 +3,7 @@ on:
   push:
     tags:
       - '*'
+  workflow_dispatch:
 jobs:
   Run-CWS-Publish:
     runs-on: ubuntu-latest
@@ -24,4 +25,4 @@ jobs:
       - run: corepack enable
       - run: pnpm i
       - run: pnpm run bundle
-      - run: chrome-webstore-upload upload --auto-publish
+      - run: pnpm chrome-webstore-upload upload --auto-publish

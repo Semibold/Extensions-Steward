@@ -1,6 +1,30 @@
+:root {
+    --act-color: #333;
+    --act-bg-color: #fff;
+    --act-em-color: #000;
+    --act-em-bg-color: yellow;
+    --act-disabled-bg-color: rgb(229 233 239);
+    --act-shadow-color-1: #e3e3e3;
+    --act-shadow-color-2: rgb(229 233 239 / 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --act-color: #fff;
+        --act-bg-color: #353535;
+        --act-disabled-bg-color: #000;
+        --act-shadow-color-1: #333;
+        --act-shadow-color-2: #fff
+    }
+}
+
+body {
+    color: var(--act-color);
+    background-color: var(--act-bg-color);
+}
+
 #app {
     font-size: 14px;
-    color: #333;
     user-select: none;
     width: 280px;
 }
@@ -27,7 +51,7 @@ ul li {
     height: 32px;
     line-height: 32px;
     border-radius: 2px;
-    box-shadow: 0 0 0 1px #e3e3e3, 0 0 2px 0 rgba(229, 233, 239, 0.3);
+    box-shadow: 0 0 0 1px var(--act-shadow-color-1), 0 0 2px 0 var(--act-shadow-color-2);
     transition: background-color 0.15s;
     overflow: hidden;
     cursor: pointer;
@@ -39,7 +63,7 @@ ul li {
 }
 
 ul li[data-enabled="false"] {
-    background-color: rgb(229, 233, 239);
+    background-color: var(--act-disabled-bg-color);
 }
 
 img {
@@ -64,7 +88,8 @@ em {
     padding: 0 8px;
     width: 272px;
     font-style: normal;
-    background-color: yellow;
+    color: var(--act-em-color);
+    background-color: var(--act-em-bg-color);
     box-sizing: border-box;
     z-index: 100;
     cursor: default;

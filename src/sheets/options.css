@@ -1,12 +1,27 @@
+:root {
+    --opt-bg-color: #fff;
+    --opt-border-color: #dbdbdb;
+    --opt-text-color: #000
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --opt-bg-color: #353535;
+        --opt-text-color: #fff
+    }
+}
+
 body {
     margin-bottom: 2.4em;
     min-width: 400px;
     font-size: 81.25%;
+    color: var(--opt-text-color);
+    background-color: var(--opt-bg-color);
 }
 
 h2 {
     line-height: 1.8;
-    border-bottom: 1px solid #dbdbdb;
+    border-bottom: 1px solid var(--opt-border-color);
     margin-bottom: 1rem;
     padding-bottom: 0.4rem;
 }

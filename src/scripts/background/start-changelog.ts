@@ -1,7 +1,7 @@
 import { K_AUTO_DISPLAY_CHANGELOG, PConfig } from "../sharre/constant.js";
 
 /**
- * @desc changelog
+ * Changelog
  */
 chrome.runtime.onInstalled.addListener((details) => {
     if (details.reason === "install") {
@@ -9,7 +9,7 @@ chrome.runtime.onInstalled.addListener((details) => {
             url: chrome.i18n.getMessage("project_readme"),
         });
     }
-    if (details.reason === "update" && details.previousVersion) {
+    if (details.reason === "update") {
         const [prevMajor, prevMinor] = details.previousVersion.split(".", 2);
         const [major, minor] = chrome.runtime.getManifest().version.split(".", 2);
         // ignore changelog if major and minor have been not changed

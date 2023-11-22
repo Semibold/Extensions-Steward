@@ -1,6 +1,6 @@
 import { getPinyinFromHanzi, IToken } from "./hanzi-to-pinyin.js";
 
-interface IMapCacheItem {
+interface IKeywordCacheItem {
     item: chrome.management.ExtensionInfo;
     tokens: IToken[];
     contents: { target: string; source: string };
@@ -10,7 +10,7 @@ interface IMapCacheItem {
  * Search chrome extensions in background page
  */
 export class KeywordSearch {
-    caches: Map<string, IMapCacheItem>;
+    caches: Map<string, IKeywordCacheItem>;
     separatorSymbol: string;
 
     constructor() {
@@ -51,7 +51,7 @@ export class KeywordSearch {
      */
     syncItemCache(item: chrome.management.ExtensionInfo) {
         if (this.caches.has(item.id)) {
-            const cache = this.caches.get(item.id) as IMapCacheItem;
+            const cache = this.caches.get(item.id);
             this.caches.set(item.id, { item, tokens: cache.tokens, contents: cache.contents });
         } else {
             this.addItemCache(item);
@@ -91,7 +91,7 @@ export class KeywordSearch {
         if (!keyword) {
             return this.filterByQualifier(qualifier);
         }
-        const result: IMapCacheItem[] = [];
+        const result: IKeywordCacheItem[] = [];
         const chars = Array.from(keyword);
         for (const cache of this.caches.values()) {
             if (this.isKeywordMatchName(cache.item.id, chars)) {
@@ -104,7 +104,7 @@ export class KeywordSearch {
     /**
      * @private
      */
-    filterByQualifier(qualifier?: string, partial?: IMapCacheItem[]) {
+    filterByQualifier(qualifier?: string, partial?: IKeywordCacheItem[]) {
         const result: chrome.management.ExtensionInfo[] = (partial || Array.from(this.caches.values())).map(
             (cache) => cache.item,
         );
@@ -136,7 +136,7 @@ export class KeywordSearch {
      * @private
      */
     isKeywordMatchName(id: string, chars: string[]) {
-        const cache = this.caches.get(id) as IMapCacheItem;
+        const cache = this.caches.get(id);
         const pointers = { target: 0, source: 0 };
         for (const char of chars) {
             if (pointers.target !== -1) {

@@ -32,7 +32,7 @@ class ExtensionManager {
         this.diagramWeakMap = new WeakMap();
         this.disabledExtensionIdSet = new Set();
         this.fragment = document.createDocumentFragment();
-        this.container = document.getElementById("app") as HTMLElement;
+        this.container = document.getElementById("app");
         this.init();
     }
 
@@ -82,6 +82,12 @@ class ExtensionManager {
         );
     }
 
+    /**
+     * Fetches keyword search results.
+     *
+     * @param {string} input - The keyword to search for.
+     * @return {Promise<chrome.management.ExtensionInfo[]>} A promise that resolves to an array of ExtensionInfo objects.
+     */
     async fetchKeywordSearch(input: string): Promise<chrome.management.ExtensionInfo[]> {
         return new Promise((resolve, reject) => {
             chrome.runtime.sendMessage(
@@ -118,7 +124,7 @@ class ExtensionManager {
     /**
      * @param {HTMLElement} h1
      */
-    renderFrameState(h1: HTMLHeadElement) {
+    renderFrameState(h1: HTMLElement) {
         h1.tabIndex = this.lastSearchUserInput.length ? -1 : 0;
         h1.textContent = chrome.i18n.getMessage(
             this.disabledExtensionIdSet.size ? "one_key_restore" : "one_key_disable",
@@ -129,7 +135,7 @@ class ExtensionManager {
      * @param {HTMLElement} [em]
      */
     renderLastSearchUserInput(em?: HTMLElement) {
-        const node = em || (this.container.querySelector("em") as HTMLElement);
+        const node = em || this.container.querySelector("em");
         if (em) node.textContent = this.lastSearchUserInput;
     }
 
@@ -153,8 +159,8 @@ class ExtensionManager {
      * @param {chrome.management.ExtensionInfo} item
      */
     renderItemState(li: HTMLElement, item: chrome.management.ExtensionInfo) {
-        const img = li.querySelector("img") as HTMLImageElement;
-        const span = li.querySelector("span") as HTMLSpanElement;
+        const img = li.querySelector("img");
+        const span = li.querySelector("span");
         const iconInfo = { size: 32, url: `chrome://extension-icon/${item.id}/32/0` };
         if (item.icons && item.icons.length) {
             const firstIcon = item.icons[0];
@@ -239,9 +245,9 @@ class ExtensionManager {
             if (node.closest("h1")) {
                 this.disabledExtensionIdSet.size ? this.oneKeyRestore() : this.oneKeyDisable();
             } else {
-                const li = node.closest("li") as HTMLElement;
+                const li = node.closest("li");
                 if (this.diagramWeakMap.has(li)) {
-                    chrome.management.get(this.diagramWeakMap.get(li) as string, (item) =>
+                    chrome.management.get(this.diagramWeakMap.get(li), (item) =>
                         chrome.management.setEnabled(item.id, !item.enabled),
                     );
                 }
@@ -264,11 +270,13 @@ class ExtensionManager {
         chrome.management.onUninstalled.addListener((id) => this.continuousFilterFrameContent());
     }
 
+    /**
+     * Toggles the state of an item.
+     */
     toggleItemState(item: chrome.management.ExtensionInfo) {
         for (const li of document.querySelectorAll("li")) {
             if (this.diagramWeakMap.has(li)) {
                 if (this.diagramWeakMap.get(li) === item.id) {
-                    // noinspection JSCheckFunctionSignatures
                     this.renderItemState(li, item);
                     break;
                 }
@@ -276,12 +284,15 @@ class ExtensionManager {
         }
     }
 
+    /**
+     * Asynchronously disables all enabled extensions.
+     */
     async oneKeyDisable() {
         const list = await this.getTargetExtensionInfos();
         const filtered = list.filter((item) => item.enabled);
         const tailId = Boolean(filtered.length) && filtered[filtered.length - 1].id;
         while (filtered.length) {
-            const item = filtered.shift() as chrome.management.ExtensionInfo;
+            const item = filtered.shift();
             chrome.management.setEnabled(item.id, false, () => {
                 this.disabledExtensionIdSet.add(item.id);
                 if (item.id === tailId) {
@@ -295,6 +306,9 @@ class ExtensionManager {
         }
     }
 
+    /**
+     * Asynchronously restores the target extension by enabling previously disabled extensions.
+     */
     async oneKeyRestore() {
         const list = await this.getTargetExtensionInfos();
         const disabledRecently = Array.from(this.disabledExtensionIdSet);
@@ -307,7 +321,7 @@ class ExtensionManager {
         );
         const h1 = this.container.querySelector("h1");
         while (disabledRecently.length) {
-            const id = disabledRecently.shift() as string;
+            const id = disabledRecently.shift();
             disabledExisting.has(id) && chrome.management.setEnabled(id, true);
         }
         this.disabledExtensionIdSet.clear();

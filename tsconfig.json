@@ -2,6 +2,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "strict": true,
+    "strictNullChecks": false,
     "sourceMap": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

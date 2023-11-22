@@ -55,6 +55,10 @@
     "message": "Theme",
     "description": "No translation required"
   },
+  "options_login_screen_extension": {
+    "message": "Login screen extension",
+    "description": "No translation required"
+  },
   "menu_feedback": {
     "message": "Feedback"
   },

@@ -433,6 +433,12 @@ function doSelfValidation() {
     return true;
 }
 
+/**
+ * Generates a token based on the given character.
+ *
+ * @param {string} character - The character to generate the token from.
+ * @returns {Token} The generated token.
+ */
 function getToken(character: string) {
     const token = new Token();
     const letter = character.toString();
@@ -442,7 +448,7 @@ function getToken(character: string) {
     let offset = -1;
     let cmp;
 
-    if (<number>character.codePointAt(0) < 256) {
+    if (character.codePointAt(0) < 256) {
         token.type = Token.LATIN;
         token.target = letter;
         return token;
@@ -543,7 +549,7 @@ export function getPinyinFromHanzi(input: string) {
             if (sb.length > 0) {
                 addToken(sb, tokens, tokenType);
             }
-        } else if (<number>character.codePointAt(0) < 256) {
+        } else if (character.codePointAt(0) < 256) {
             if (tokenType !== Token.LATIN && sb.length > 0) {
                 addToken(sb, tokens, tokenType);
             }

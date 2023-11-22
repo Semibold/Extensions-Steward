@@ -1,10 +1,12 @@
 /**
- * @desc 问题反馈
+ * Feedback context menu
  */
-chrome.contextMenus.create({
-    id: "menu_feedback",
-    title: chrome.i18n.getMessage("menu_feedback"),
-    contexts: ["action"],
+chrome.runtime.onInstalled.addListener(() => {
+    chrome.contextMenus.create({
+        id: "menu_feedback",
+        title: chrome.i18n.getMessage("menu_feedback"),
+        contexts: ["action"],
+    });
 });
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {

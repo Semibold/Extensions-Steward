@@ -13,7 +13,7 @@
     :root {
         --act-color: #fff;
         --act-bg-color: #353535;
-        --act-disabled-bg-color: #000;
+        --act-disabled-bg-color: #222;
         --act-shadow-color-1: #333;
         --act-shadow-color-2: #fff;
         --act-img-filter-contrast: 0.6;

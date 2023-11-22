@@ -6,6 +6,7 @@
     --act-disabled-bg-color: rgb(229 233 239);
     --act-shadow-color-1: #e3e3e3;
     --act-shadow-color-2: rgb(229 233 239 / 0.3);
+    --act-img-filter-contrast: 1;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -14,7 +15,8 @@
         --act-bg-color: #353535;
         --act-disabled-bg-color: #000;
         --act-shadow-color-1: #333;
-        --act-shadow-color-2: #fff
+        --act-shadow-color-2: #fff;
+        --act-img-filter-contrast: 0.6;
     }
 }
 
@@ -71,6 +73,7 @@ img {
     margin: auto 4px auto 8px;
     width: 16px;
     height: 16px;
+    filter: contrast(var(--act-img-filter-contrast));
 }
 
 span {

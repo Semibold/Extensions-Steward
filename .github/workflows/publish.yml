@@ -9,9 +9,9 @@ jobs:
     env:
       SOURCE: dist/bundle.zip
       EXTENSION_ID: cjphebojlojkmfgclckgpnjdkgkfkmkf
-      CLIENT_ID: $WS_CLIENT_ID
-      CLIENT_SECRET: $WS_CLIENT_SECRET
-      REFRESH_TOKEN: $WS_REFRESH_TOKEN
+      CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
+      CLIENT_SECRET: ${{ secrets.CWS_CLIENT_SECRET }}
+      REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}
     strategy:
       matrix:
         node-version: [20.x]
@@ -24,4 +24,4 @@ jobs:
       - run: corepack enable
       - run: pnpm i
       - run: pnpm run bundle
-      - run: chrome-webstore-upload upload --source $SOURCE --extension-id $EXTENSION_ID --client-id $CLIENT_ID --client-secret $CLIENT_SECRET --refresh-token $REFRESH_TOKEN --auto-publish
+      - run: chrome-webstore-upload upload --auto-publish

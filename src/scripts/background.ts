@@ -15,6 +15,6 @@ chrome.runtime.onMessage.addListener((message: RuntimeMessageSchema, sender, sen
     switch (message.type) {
         case "keywordSearch":
             sendResponse(keywordSearch.search(message.input));
-            break;
+            return true;
     }
 });

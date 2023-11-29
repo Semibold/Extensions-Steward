@@ -19,7 +19,7 @@
   "commands": {
     "_execute_action": {
       "suggested_key": {
-        "default": "Shift+Alt+Z"
+        "default": "Alt+Shift+Z"
       }
     }
   },

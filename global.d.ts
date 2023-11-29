@@ -6,4 +6,4 @@ interface KeywordSearchSchema {
 /**
  * Union type of schema
  */
-declare type RuntimeMessageSchema = KeywordSearchSchema;
+declare type ServiceWorkerMessage = KeywordSearchSchema;

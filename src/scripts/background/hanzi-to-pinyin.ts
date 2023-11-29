@@ -388,7 +388,7 @@ class Token implements IToken {
 /**
  * @return {boolean}
  */
-function hasChinaCollator() {
+function hasChinaCollator(): boolean {
     // Check if zh_CN collation data is available
     const locale = Intl.Collator.supportedLocalesOf([LOCALE_CHINA]);
     const hasChinaCollator = locale.some((lang) => lang === LOCALE_CHINA);
@@ -408,7 +408,7 @@ function hasChinaCollator() {
  *
  * @return {boolean} - true when the table looks correct.
  */
-function doSelfValidation() {
+function doSelfValidation(): boolean {
     let lastChar = UNIHANS[0];
     let lastString = lastChar.toString();
     for (const c of UNIHANS) {
@@ -439,7 +439,7 @@ function doSelfValidation() {
  * @param {string} character - The character to generate the token from.
  * @returns {Token} The generated token.
  */
-function getToken(character: string) {
+function getToken(character: string): Token {
     const token = new Token();
     const letter = character.toString();
 
@@ -527,7 +527,7 @@ function addToken(sb: StringBuilder, tokens: Token[], tokenType: number) {
  * @param {string} input
  * @return {Token[]}
  */
-export function getPinyinFromHanzi(input: string) {
+export function getPinyinFromHanzi(input: string): Token[] {
     if (typeof input !== "string") {
         throw new Error("`input` must be string.");
     }

@@ -72,10 +72,6 @@ class ExtensionManager {
         this.container.textContent = "";
     }
 
-    /**
-     * @param {string} [input]
-     * @return {chrome.management.ExtensionInfo[]}
-     */
     async getTargetExtensionInfos(input = ""): Promise<chrome.management.ExtensionInfo[]> {
         return Array.from(await this.fetchKeywordSearch(input)).filter(
             (item) => !(item.id === chrome.runtime.id || this.excludeTypeSet.has(item.type)),

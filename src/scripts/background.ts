@@ -9,7 +9,7 @@ import { KeywordSearch } from "./background/keyword-search.js";
 
 const keywordSearch = new KeywordSearch();
 
-chrome.runtime.onMessage.addListener((message: RuntimeMessageSchema, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message: ServiceWorkerMessage, sender, sendResponse) => {
     if (!message) return;
 
     switch (message.type) {

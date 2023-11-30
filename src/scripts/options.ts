@@ -6,6 +6,7 @@ import {
     K_KEEP_LAST_SEARCH_STATUS,
     ChromeExtensionType,
 } from "./sharre/constant.js";
+import { chromeStorageSync } from "./sharre/chrome-storage.js";
 
 /**
  * @desc i18n
@@ -26,23 +27,15 @@ function setOptionsItem(node: HTMLInputElement, items: Record<string, any>, key:
     });
 }
 
-chrome.storage.sync.get(
-    {
-        [K_AUTO_DISPLAY_CHANGELOG]: PConfig.defaultOptions.autoDisplayChangelog,
-        [K_KEEP_LAST_SEARCH_STATUS]: PConfig.defaultOptions.keepLastSearchStatus,
-    },
-    (items) => {
-        if (chrome.runtime.lastError) return;
-        setOptionsItem(document.querySelector(`input[value="update_details"]`), items, K_AUTO_DISPLAY_CHANGELOG);
-        setOptionsItem(document.querySelector(`input[value="search_status"]`), items, K_KEEP_LAST_SEARCH_STATUS);
-    },
-);
+chromeStorageSync.promise.then((items) => {
+    setOptionsItem(document.querySelector(`input[value="update_details"]`), items, K_AUTO_DISPLAY_CHANGELOG);
+    setOptionsItem(document.querySelector(`input[value="search_status"]`), items, K_KEEP_LAST_SEARCH_STATUS);
+});
 
 /**
  * @desc 配置数据同步
  */
-chrome.storage.sync.get(K_EXTENSION_TYPE_CHECKED, (items) => {
-    if (chrome.runtime.lastError) return;
+chromeStorageSync.promise.then((items) => {
     const eTypeChecked = Object.assign(PConfig.eTypeChecked, items[K_EXTENSION_TYPE_CHECKED]);
     for (const [type, checked] of Object.entries<boolean>(eTypeChecked)) {
         const node = document.querySelector<HTMLInputElement>(`input[value="${type}"]`);
@@ -52,7 +45,7 @@ chrome.storage.sync.get(K_EXTENSION_TYPE_CHECKED, (items) => {
         node.disabled = disabled;
         node.addEventListener("click", (e) => {
             if (!disabled) {
-                eTypeChecked[type] = node.checked;
+                eTypeChecked[type as ChromeExtensionType] = node.checked;
                 chrome.storage.sync.set({
                     [K_EXTENSION_TYPE_CHECKED]: eTypeChecked,
                 });

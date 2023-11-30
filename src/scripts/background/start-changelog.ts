@@ -1,4 +1,5 @@
-import { K_AUTO_DISPLAY_CHANGELOG, PConfig } from "../sharre/constant.js";
+import { K_AUTO_DISPLAY_CHANGELOG } from "../sharre/constant.js";
+import { chromeStorageSync } from "../sharre/chrome-storage.js";
 
 /**
  * Changelog
@@ -20,18 +21,12 @@ chrome.runtime.onInstalled.addListener((details) => {
                 return;
             }
         }
-        chrome.storage.sync.get(
-            {
-                [K_AUTO_DISPLAY_CHANGELOG]: PConfig.defaultOptions.autoDisplayChangelog,
-            },
-            (items) => {
-                if (chrome.runtime.lastError) return;
-                if (items[K_AUTO_DISPLAY_CHANGELOG]) {
-                    chrome.tabs.create({
-                        url: chrome.i18n.getMessage("project_changelog"),
-                    });
-                }
-            },
-        );
+        chromeStorageSync.promise.then((items) => {
+            if (items[K_AUTO_DISPLAY_CHANGELOG]) {
+                chrome.tabs.create({
+                    url: chrome.i18n.getMessage("project_changelog"),
+                });
+            }
+        });
     }
 });

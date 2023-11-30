@@ -5,6 +5,7 @@ import {
     K_LAST_SEARCH_USER_INPUT,
     PConfig,
 } from "./sharre/constant.js";
+import { chromeStorageLocal, chromeStorageSync } from "./sharre/chrome-storage.js";
 
 class ExtensionManager {
     excludeTypeSet: Set<string>;
@@ -37,35 +38,43 @@ class ExtensionManager {
     }
 
     async init() {
-        this.getLastSearchUserInput();
-        this.getDisabledExtensionIds();
+        await this.getLastSearchUserInput();
+        await this.getDisabledExtensionIds();
         await this.renderFrameContent();
         this.registerAutoFocusEvent();
         this.registerUserInputEvent();
         this.registerOtherEvents();
     }
 
-    getLastSearchUserInput() {
+    async getLastSearchUserInput() {
         if (this.enableLastSearchStatus) {
-            const data = localStorage.getItem(K_LAST_SEARCH_USER_INPUT);
-            if (typeof data === "string") {
-                this.lastSearchUserInput = data;
-            }
+            chromeStorageLocal.promise.then((items) => {
+                const data = items[K_LAST_SEARCH_USER_INPUT];
+                if (typeof data === "string") {
+                    this.lastSearchUserInput = data;
+                }
+            });
         }
     }
 
     setLastSearchUserInput() {
-        localStorage.setItem(K_LAST_SEARCH_USER_INPUT, this.lastSearchUserInput);
+        chromeStorageLocal.set({
+            [K_LAST_SEARCH_USER_INPUT]: this.lastSearchUserInput,
+        });
     }
 
-    getDisabledExtensionIds() {
-        const data = localStorage.getItem(K_DISABLED_EXTENSION_ID);
-        const list = data ? data.split(",") : [];
-        list.forEach((id) => this.disabledExtensionIdSet.add(id));
+    async getDisabledExtensionIds() {
+        return chromeStorageLocal.promise.then((items) => {
+            const data = items[K_DISABLED_EXTENSION_ID];
+            const list = data ? data.split(",") : [];
+            list.forEach((id) => this.disabledExtensionIdSet.add(id));
+        });
     }
 
     setDisabledExtensionIds() {
-        localStorage.setItem(K_DISABLED_EXTENSION_ID, Array.from(this.disabledExtensionIdSet).join(","));
+        chromeStorageLocal.set({
+            [K_DISABLED_EXTENSION_ID]: Array.from(this.disabledExtensionIdSet).join(","),
+        });
     }
 
     resetContainerContents() {
@@ -328,7 +337,7 @@ class ExtensionManager {
     }
 }
 
-chrome.storage.sync.get([K_EXTENSION_TYPE_CHECKED, K_KEEP_LAST_SEARCH_STATUS], (items) => {
+chromeStorageSync.promise.then((items) => {
     const excludeTypeSet: Set<string> = new Set();
     const eTypeChecked = Object.assign(PConfig.eTypeChecked, items[K_EXTENSION_TYPE_CHECKED]);
     const enableLastSearchStatus = Boolean(

@@ -1,6 +1,6 @@
 {
   "name": "extensions-steward",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "private": true,
   "description": "Chrome Extension",
   "packageManager": "pnpm@8.10.5",

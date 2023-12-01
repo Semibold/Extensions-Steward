@@ -21,7 +21,10 @@ interface IChromeStorageSyncInfo {
 
 const SADCache = new Map<chrome.storage.AreaName, unknown>();
 
-async function initializeStorageArea<T extends object>(areaName: chrome.storage.AreaName, keys?: unknown): Promise<T> {
+async function initializeStorageArea<T extends object>(
+    areaName: chrome.storage.AreaName,
+    keys?: Required<T>,
+): Promise<T> {
     const promise = chrome.storage[areaName].get(keys) as Promise<T>;
     promise.then((data) => SADCache.set(areaName, data));
     return promise;
@@ -48,9 +51,12 @@ class ChromeStorageArea<T extends object> {
         }
     }
 
+    /**
+     * @desc 要么提供全部的 keys 参数, 要么不提供。
+     */
     constructor(
         readonly areaName: chrome.storage.AreaName,
-        keys?: Partial<T>,
+        keys?: Required<T>,
     ) {
         this.__initPromise = initializeStorageArea<T>(this.areaName, keys);
     }
@@ -67,6 +73,7 @@ class ChromeStorageArea<T extends object> {
 export const chromeStorageLocal = new ChromeStorageArea<IChromeStorageLocalInfo>("local");
 
 export const chromeStorageSync = new ChromeStorageArea<IChromeStorageSyncInfo>("sync", {
+    [K_EXTENSION_TYPE_CHECKED]: null,
     [K_AUTO_DISPLAY_CHANGELOG]: PConfig.defaultOptions.autoDisplayChangelog,
     [K_KEEP_LAST_SEARCH_STATUS]: PConfig.defaultOptions.keepLastSearchStatus,
 });
